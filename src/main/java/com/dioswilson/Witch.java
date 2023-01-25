@@ -1,9 +1,11 @@
 package com.dioswilson;
 
+import com.dioswilson.gui.ResultsPanel;
 import com.dioswilson.minecraft.BlockPos;
 import com.dioswilson.minecraft.Chunk;
 import com.seedfinding.mcbiome.source.OverworldBiomeSource;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -37,19 +39,22 @@ public class Witch {
 
     private final OverworldBiomeSource biomeSource;
     private final Semaphore semaphore;
-    public int advancers;
+    private int advancers;
+    private int maxAdvancers;
     private Set<Chunk> eligibleChunksForSpawning = new HashSet<>();
 
-    public Witch(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> chunksForSpawning) {
+    public Witch(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> chunksForSpawning, int maxAdvancers) {
 
 //        System.out.println("Free memory init = "+(Runtime.getRuntime().freeMemory()));
         this.seed = seed;
         this.biomeSource = biomeSource;
         this.semaphore = semaphore;
+        this.maxAdvancers = maxAdvancers;
         this.eligibleChunksForSpawning.addAll(chunksForSpawning);
         this.witchChunks.addAll(witchChunks);
         this.areaMansionX = areaMansionX;
         this.areaMansionZ = areaMansionZ;
+        this.maxAdvancers = maxAdvancers;
 
         finalHeightMap = new int[this.witchChunks.size()];
 
@@ -69,17 +74,20 @@ public class Witch {
         int fromZ = this.areaMansionZ * 1280;
         int toX = fromX + 1280;
         int toZ = fromZ + 1280;
-        String from = "From X:" + fromX + " Z:" + fromZ;
-        String to = "To X:" + toX + " Z:" + toZ;
-        String iter = " finalHeightMap " + Arrays.toString(this.finalHeightMap);
-        String advancers = " Advancers: " + this.advancers;
+        String from = "X:" + fromX + ", Z:" + fromZ;
+        String to = "X:" + toX + ", Z:" + toZ;
+        String iter = Arrays.toString(this.finalHeightMap);
+        String advancers = ""+ this.advancers;
         String tp = " /tp " + fromX + " 150 " + fromZ + "\n";
         try {
             this.semaphore.acquire();
             String formattedResultText = String.format("%-28s %-30s %-30s %-15s %s", from, to, iter, advancers, tp);
-            Main.textArea.append(formattedResultText);
+//            Main.textArea.append(formattedResultText);
             System.out.println(formattedResultText);
             System.out.println("Date: " + new Date().getTime());
+            SwingUtilities.invokeLater(()->{
+                ResultsPanel.model.addRow(new Object[]{from,to,iter,advancers,"getBlocksLitematica"});
+            });
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
@@ -109,9 +117,7 @@ public class Witch {
 
     public void initialize() {
 
-//        System.out.println(new Date().getTime());
-//        System.out.println("init: "+Runtime.getRuntime().freeMemory());
-        for (int i = 0; i < 4000; i++) {
+        for (int i = 0; i <= this.maxAdvancers; i++) {
             this.advancers = 0;
             Arrays.fill(this.finalHeightMap, 0);
             this.positions.clear();
@@ -119,248 +125,8 @@ public class Witch {
 //            calculateRandomChunkPositions(witchChunks.size(), 4 + i);
             calculateRandomChunkPositionsFull(4 + i);
         }
-//        Runtime.getRuntime().gc();
-//        System.out.println("end: "+Runtime.getRuntime().freeMemory());
 
     }
-
-
-    private void calculateRandomChunkPositions(int depth, int calls) {
-
-        int validChunks = 0;
-        Set<Integer> differentCalls = new HashSet<>();
-        Set<Integer> differentCallsTemp = new HashSet<>();
-
-        differentCalls.add(calls);
-        //Falta tener en cuenta los chunks que no sirven
-        for (int i = 0; i < depth; i++) {
-            int callsAmount = differentCalls.size();//If ==0 then can optimize skipping, it means previous chunk was useless
-
-            if (callsAmount > 0) {
-                Chunk chunk = witchChunks.get(i);
-
-                for (int height : heightMap) {
-
-                    int validSpawns = 0;
-
-                    for (int specificCall : differentCalls) {
-
-                        BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
-                        int moreCalls = 3;
-                        int staticY = blockpos.getY();
-
-                        if (staticY >= witchHutMinHeight && staticY <= witchHutMaxHeight) {
-
-                            int staticX = blockpos.getX();
-                            int staticZ = blockpos.getZ();
-
-
-                            int perfect = 0;
-
-                            for (int packSize1 : mobsPerPack) {
-                                int mobsSpawned = 0;
-                                HashMap<String, Object> strike1 = spawning(packSize1,/* new Random(seed),*/ specificCall + moreCalls, staticX, staticY, staticZ, chunk, mobsSpawned, height);
-//                    calls =;
-                                mobsSpawned = (int) strike1.get("mobs");
-                                int strike1Calls = (int) strike1.get("calls");
-                                if (mobsSpawned < 4) {
-                                    for (int packSize2 : mobsPerPack) {
-//                            mobsSpawned = ;
-                                        HashMap<String, Object> strike2 = spawning(packSize2, /*new Random(seed),*/ strike1Calls, staticX, staticY, staticZ, chunk, (int) strike1.get("mobs"), height);
-//                            calls = ;
-                                        mobsSpawned = (int) strike2.get("mobs");
-                                        int strike2Calls = (int) strike2.get("calls");
-                                        if (mobsSpawned < 4) {
-                                            for (int packSize3 : mobsPerPack) {
-//                                    mobsSpawned = ;
-                                                //Can use only one strike(MAYBE)
-                                                HashMap<String, Object> strike3 = spawning(packSize3,/* new Random(seed),*/ strike2Calls, staticX, staticY, staticZ, chunk, (int) strike2.get("mobs"), height);
-//                                        calls = ;
-                                                mobsSpawned = (int) strike3.get("mobs");
-                                                differentCallsTemp.add((int) strike3.get("calls"));
-                                                if (mobsSpawned >= 3) {//Perfect is 4
-                                                    perfect++;
-                                                }
-                                            }
-                                        }
-                                        else {
-                                            differentCallsTemp.add(strike2Calls);
-                                            perfect += 4;
-                                        }
-                                        this.advancers = calls - 4;
-                                    }
-                                }
-                                else {
-                                    differentCallsTemp.add(strike1Calls);
-                                    perfect += 16;
-                                }
-
-                            }
-                            if (perfect >= (54 / (i * 2 + 1))) {//max 64
-                                validSpawns++;
-//                            System.out.println("valid");
-                            }
-                        }
-
-
-                        if (validSpawns >= (callsAmount * 0.75 / (i + 1))) {
-//                        System.out.println("chunks++");
-                            this.finalHeightMap[i] = height;
-//                    System.out.println("Height: "+height+" i: "+i);
-                            validChunks++;
-                            break;//TODO: It only uses the first height it finds for a chunk
-                        }
-                        differentCallsTemp.clear();
-
-                    }
-
-                }
-                differentCalls.clear();
-                differentCalls.addAll(differentCallsTemp);
-                differentCallsTemp.clear();
-            }
-
-        }
-
-        if (validChunks >= 2) {
-            print();
-        }
-//        System.out.println("Finished");
-
-
-    }
-
-
-    public HashMap<String, Object> spawning(int value/*, Random rand*/, int calls, int staticX, int staticY, int staticZ, Chunk chunk, int spawnedMobs, int height) {
-        Random rand = new Random(seed);
-
-        int x = staticX;
-        int z = staticZ;
-
-        boolean list = false;
-        boolean canSpawn = true;
-
-        for (int c = 0; c < calls; c++) {
-            rand.nextInt();
-        }
-        int moreCalls = 0;
-        HashMap<String, Object> data = new HashMap<>();
-
-        for (int i4 = 0; i4 < value; ++i4) {
-
-            x += rand.nextInt(6) - rand.nextInt(6);
-            rand.nextInt(1);//These two are from Y, (0-0)
-            rand.nextInt(1);
-            z += rand.nextInt(6) - rand.nextInt(6);
-            moreCalls += 6;
-
-            //<<4==*16
-            int getX = chunk.getX() << 4;
-            int getZ = chunk.getZ() << 4;
-
-            if (!list) {
-                list = true;
-                if ((x > (getX + offSetX)) || (z > (getZ + offSetZ)) || (x < (getX)) || (z < (getZ))) {//Can ignore height
-
-                    int biomeId = biomeSource.getBiome(x, staticY, z).getId();
-                    int weight;
-                    if (biomeId == 2 || biomeId == 17 || biomeId == 130) {//2,17,130=desert;21,22,23=jungla;6,134= swamp, ignoring snow,end,hell,void and mooshroom island
-                        weight = rand.nextInt(515);
-                        if (!(weight - 415 >= -5 && weight - 415 < 0)) {//removes zombies and zombie villagers and places them at the end
-                            canSpawn = false;
-                        }
-                    }
-                    else if (biomeId > 20 && biomeId < 24) {//Adds ocelot at the end with weight 2
-                        weight = rand.nextInt(517);
-                        if (!(weight - 515 >= -5 && weight - 515 < 0)) {
-                            canSpawn = false;
-                        }
-                    }
-                    else if (biomeId == 6 || biomeId == 134) {//Adds slime at the end
-                        weight = rand.nextInt(516);
-                        if (!(weight - 515 >= -5 && weight - 515 < 0)) {
-                            canSpawn = false;
-                        }
-                    }
-                    else {
-                        weight = rand.nextInt(515);
-                        if (!(weight - 515 >= -5)) {//Always <0
-                            canSpawn = false;
-                        }
-                    }
-
-                }
-                else {
-                    rand.nextInt();
-                }
-                moreCalls += 1;
-
-            }
-
-            if ((x <= ((getX) + offSetX)) && (z <= ((getZ) + offSetZ)) && (x >= (getX)) && (z >= (getZ)) && canSpawn) {//Can ignore height
-                rand.nextInt();//nextFloat() on code
-                moreCalls++;
-                spawnedMobs++;
-                positions.add(new BlockPos(x, staticY, z));//It will add regardless of the height, therefore it might block some
-
-            }
-
-//            if (canSpawn) {
-//                rand.nextInt();//nextFloat() on code
-//                moreCalls++;
-//                spawnedMobs++;
-//                positions.add(new BlockPos(x, staticY, z));
-//
-//            }
-
-            if (spawnedMobs == 4) {
-                break;
-            }
-
-        }
-        data.put("height", height);
-        data.put("calls", calls + moreCalls);
-        data.put("mobs", spawnedMobs);
-//        data.put("rand", rand);
-
-        return data;
-
-
-    }
-
-
-    public BlockPos getRandomChunkPosition(int calls, int x, int z, int height) {
-        Random rand = new Random(seed);
-        for (int c = 0; c < calls; c++) {
-            rand.nextInt();
-        }
-        int otherX = rand.nextInt(16);
-        int otherZ = rand.nextInt(16);
-        int i = (x << 4) + otherX;
-        int j = (z << 4) + otherZ;
-        int k = roundUp(height, 16);
-        int l = rand.nextInt(k);
-
-        return new BlockPos(i, l, j);
-    }
-
-
-    public int roundUp(int number, int interval) {
-        if (interval == 0) {
-            return 0;
-        }
-        else if (number == 0) {
-            return interval;
-        }
-        else {
-            if (number < 0) {
-                interval *= -1;
-            }
-            int i = number % interval;
-            return i == 0 ? number : number + interval - i;
-        }
-    }
-
 
     private void calculateRandomChunkPositionsFull(int calls) {
         int validChunks = 0;
@@ -500,13 +266,146 @@ public class Witch {
 
         }
 
-        if (validChunks >= 3) {
+        if (validChunks >= 2) {
             this.advancers = calls - 4;
             print();
         }
 
 
     }
+
+    public HashMap<String, Object> spawning(int value/*, Random rand*/, int calls, int staticX, int staticY, int staticZ, Chunk chunk, int spawnedMobs, int height) {
+        Random rand = new Random(seed);
+
+        int x = staticX;
+        int z = staticZ;
+
+        boolean list = false;
+        boolean canSpawn = true;
+
+        for (int c = 0; c < calls; c++) {
+            rand.nextInt();
+        }
+        int moreCalls = 0;
+        HashMap<String, Object> data = new HashMap<>();
+
+        for (int i4 = 0; i4 < value; ++i4) {
+
+            x += rand.nextInt(6) - rand.nextInt(6);
+            rand.nextInt(1);//These two are from Y, (0-0)
+            rand.nextInt(1);
+            z += rand.nextInt(6) - rand.nextInt(6);
+            moreCalls += 6;
+
+            //<<4==*16
+            int getX = chunk.getX() << 4;
+            int getZ = chunk.getZ() << 4;
+
+            if (!list) {
+                list = true;
+                if ((x > (getX + offSetX)) || (z > (getZ + offSetZ)) || (x < (getX)) || (z < (getZ))) {//Can ignore height
+
+                    int biomeId = biomeSource.getBiome(x, staticY, z).getId();
+                    int weight;
+                    if (biomeId == 2 || biomeId == 17 || biomeId == 130) {//2,17,130=desert;21,22,23=jungla;6,134= swamp, ignoring snow,end,hell,void and mooshroom island
+                        weight = rand.nextInt(515);
+                        if (!(weight - 415 >= -5 && weight - 415 < 0)) {//removes zombies and zombie villagers and places them at the end
+                            canSpawn = false;
+                        }
+                    }
+                    else if (biomeId > 20 && biomeId < 24) {//Adds ocelot at the end with weight 2
+                        weight = rand.nextInt(517);
+                        if (!(weight - 515 >= -5 && weight - 515 < 0)) {
+                            canSpawn = false;
+                        }
+                    }
+                    else if (biomeId == 6 || biomeId == 134) {//Adds slime at the end
+                        weight = rand.nextInt(516);
+                        if (!(weight - 515 >= -5 && weight - 515 < 0)) {
+                            canSpawn = false;
+                        }
+                    }
+                    else {
+                        weight = rand.nextInt(515);
+                        if (!(weight - 515 >= -5)) {//Always <0
+                            canSpawn = false;
+                        }
+                    }
+
+                }
+                else {
+                    rand.nextInt();
+                }
+                moreCalls += 1;
+
+            }
+
+            if ((x <= ((getX) + offSetX)) && (z <= ((getZ) + offSetZ)) && (x >= (getX)) && (z >= (getZ)) && canSpawn) {//Can ignore height
+                rand.nextInt();//nextFloat() on code
+                moreCalls++;
+                spawnedMobs++;
+                positions.add(new BlockPos(x, staticY, z));//It will add regardless of the height, therefore it might block some
+
+            }
+
+//            if (canSpawn) {
+//                rand.nextInt();//nextFloat() on code
+//                moreCalls++;
+//                spawnedMobs++;
+//                positions.add(new BlockPos(x, staticY, z));
+//
+//            }
+
+            if (spawnedMobs == 4) {
+                break;
+            }
+
+        }
+        data.put("height", height);
+        data.put("calls", calls + moreCalls);
+        data.put("mobs", spawnedMobs);
+//        data.put("rand", rand);
+
+        return data;
+
+
+    }
+
+
+    public BlockPos getRandomChunkPosition(int calls, int x, int z, int height) {
+        Random rand = new Random(seed);
+        for (int c = 0; c < calls; c++) {
+            rand.nextInt();
+        }
+        int otherX = rand.nextInt(16);
+        int otherZ = rand.nextInt(16);
+        int i = (x << 4) + otherX;
+        int j = (z << 4) + otherZ;
+        int k = roundUp(height, 16);
+        int l = rand.nextInt(k);
+
+        return new BlockPos(i, l, j);
+    }
+
+
+    public int roundUp(int number, int interval) {
+        if (interval == 0) {
+            return 0;
+        }
+        else if (number == 0) {
+            return interval;
+        }
+        else {
+            if (number < 0) {
+                interval *= -1;
+            }
+            int i = number % interval;
+            return i == 0 ? number : number + interval - i;
+        }
+    }
+
+
+
 
     private void printBlocksForCommand(String listName, Set<BlockPos> blocksToFill) {
 

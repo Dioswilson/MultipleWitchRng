@@ -27,9 +27,6 @@ public class Main {
     private Set<Chunk> chunksForSpawning = new HashSet<>();
 
 
-    private int playerX;
-    private int playerZ ;
-    private int maxAdvancers;
 
 
 
@@ -55,7 +52,7 @@ public class Main {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-        frame.setSize(400, 400);
+//        frame.setSize(550, 500);
         frame.setDefaultCloseOperation(3);
 
 
@@ -66,6 +63,7 @@ public class Main {
 
         tabbedPane.setVisible(true);
         frame.add(tabbedPane);
+        frame.pack();
         frame.setVisible(true);
 
 
@@ -105,9 +103,12 @@ public class Main {
 //        guiFrame.setVisible(true);
     }
 
-    public void Main() {
+
+
+
+    /*public void Main() {
         (new SeedFinder()).start();
-    }
+    }*/
 
     public void findAt(int x, int z) {
         setRandomSeed(x, z, konst, seed);
@@ -127,10 +128,10 @@ public class Main {
     }
 
     public void setRandomSeed(int x, int z, int konstant, long seed) {
-        long i = x * 341873128712L + z * 132897987541L + seed + konstant;
-        OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, seed);
-        Witch witch = new Witch(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.chunksForSpawning);
-        witch.initialize();
+//        long i = x * 341873128712L + z * 132897987541L + seed + konstant;
+//        OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, seed);
+//        Witch witch = new Witch(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.chunksForSpawning);
+//        witch.initialize();
     }
 
     public void printSeed() {
@@ -144,81 +145,17 @@ public class Main {
         }
     }
 
-    public void seedLoop() throws InterruptedException {
-        int x = 0;//370
-        int z = 0;//-369
-        int di = 1;//0
-        int dj = 0;//1
-        int segmentLength = 1;//739
-        int segmentPassed = 0;//0
 
-        this.witchChunks.add(new Chunk(22, 23));
-        this.witchChunks.add(new Chunk(23, 33));
-        this.witchChunks.add(new Chunk(32, 22));
-        this.witchChunks.add(new Chunk(32, 33));
-
-//        final ExecutorService threadExecutorService = Executors.newFixedThreadPool(8);
-        final ExecutorService threadExecutorService = Executors.newCachedThreadPool();
-
-        while (x < radius && !stop) {
-            if (Runtime.getRuntime().freeMemory() >= 62914560) {
-                int finalX = x;
-                int finalZ = z;
-                threadExecutorService.submit(() -> {
-                    findAt(finalX, finalZ);
-                    return null;
-                });
-//                findAt(x, z);
-//                System.out.println("X: "+x+" Z: "+z);
-//                Thread.sleep(10);
-                x += di;
-                z += dj;
-                segmentPassed++;
-                if (segmentPassed == segmentLength) {
-                    segmentPassed = 0;
-                    int buffer = di;
-                    di = -dj;
-                    dj = buffer;
-                    if (dj == 0) {
-                        segmentLength++;
-                    }
-                }
-            }
-            else {
-                Thread.sleep(4000);
-                System.out.println("ThreadSleep");
-            }
-
-        }
-        threadExecutorService.shutdown();
-
-        System.out.println("Done at X: " + x + " , Z: " + z);
-
-    }
-
-
-    private void getChunksForSpawning() {
-
-        int cunkPlayerPosX = playerX >> 4;
-        int cunkPlayerPosZ = playerZ >> 4;
-
-        for (int i = -7; i < 8; i++) {
-            for (int j = -7; j < 8; j++) {
-                this.chunksForSpawning.add(new Chunk(cunkPlayerPosX + i, cunkPlayerPosZ + j));
-            }
-        }
-    }
-
-    public class SeedFinder extends Thread {
-        public void run() {
-            try {
-                getChunksForSpawning();
-                Main.this.seedLoop();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            Main.running = false;
-        }
-    }
+//    public class SeedFinder extends Thread {
+//        public void run() {
+//            try {
+//                getChunksForSpawning();
+//                Main.this.seedLoop();
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//            Main.running = false;
+//        }
+//    }
 
 }

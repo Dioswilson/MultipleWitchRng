@@ -20,12 +20,6 @@
           <property name="text" value="Button" />
         </initial-values>
       </item>
-      <item class="javax.swing.JRadioButton" icon="/com/intellij/uiDesigner/icons/radioButton.svg" removable="false" auto-create-binding="true" can-attach-label="false">
-        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
-        <initial-values>
-          <property name="text" value="RadioButton" />
-        </initial-values>
-      </item>
       <item class="javax.swing.JCheckBox" icon="/com/intellij/uiDesigner/icons/checkBox.svg" removable="false" auto-create-binding="true" can-attach-label="false">
         <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
         <initial-values>
@@ -43,6 +37,12 @@
           <preferred-size width="150" height="-1" />
         </default-constraints>
       </item>
+      <item class="javax.swing.JRadioButton" icon="/com/intellij/uiDesigner/icons/radioButton.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="RadioButton" />
+        </initial-values>
+      </item>
       <item class="javax.swing.JPasswordField" icon="/com/intellij/uiDesigner/icons/passwordField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
         <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
           <preferred-size width="150" height="-1" />
@@ -53,12 +53,12 @@
           <preferred-size width="150" height="-1" />
         </default-constraints>
       </item>
-      <item class="javax.swing.JTextArea" icon="/com/intellij/uiDesigner/icons/textArea.svg" removable="false" auto-create-binding="true" can-attach-label="true">
+      <item class="javax.swing.JTextPane" icon="/com/intellij/uiDesigner/icons/textPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
         <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
           <preferred-size width="150" height="50" />
         </default-constraints>
       </item>
-      <item class="javax.swing.JTextPane" icon="/com/intellij/uiDesigner/icons/textPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
+      <item class="javax.swing.JTextArea" icon="/com/intellij/uiDesigner/icons/textArea.svg" removable="false" auto-create-binding="true" can-attach-label="true">
         <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
           <preferred-size width="150" height="50" />
         </default-constraints>
@@ -120,5 +120,9 @@
         <default-constraints vsize-policy="6" hsize-policy="0" anchor="0" fill="2" />
       </item>
     </group>
+  </component>
+  <component name="uidesigner-configuration">
+    <option name="INSTRUMENT_CLASSES" value="false" />
+    <option name="USE_DYNAMIC_BUNDLES" value="true" />
   </component>
 </project>
