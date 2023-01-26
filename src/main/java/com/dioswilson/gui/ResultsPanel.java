@@ -1,5 +1,7 @@
 package com.dioswilson.gui;
 
+import com.dioswilson.Litematica.LitematicStructureBuilder;
+
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
@@ -8,7 +10,7 @@ import java.awt.event.ActionListener;
 
 public class ResultsPanel extends JPanel {
     public static DefaultTableModel model;
-
+    JTable table;
     public ResultsPanel() {
         model = new DefaultTableModel(new String[]{"From", "To", "Heightmap", "Advancers",""}, 0)/*{
             @Override
@@ -21,13 +23,12 @@ public class ResultsPanel extends JPanel {
 //        model.addRow(new String[]{"kljdsf","lkajhdjdhf","ljhdfkjh","khjh"});
 //        model.setColumnIdentifiers(new String[]{"From", "To", "Heightmap", "Advancers",""});
 
-        JTable table = new JTable(model);
+       table = new JTable(model);
         table.getColumnModel().getColumn(0).setPreferredWidth(200);
         table.getColumnModel().getColumn(1).setPreferredWidth(200);
         table.getColumnModel().getColumn(2).setPreferredWidth(150);
         table.getColumnModel().getColumn(3).setPreferredWidth(100);
-        table.getColumnModel().getColumn(4).setPreferredWidth(150);
-
+        table.getColumnModel().getColumn(4).setPreferredWidth(175);
 
 
         table.getColumn("").setCellRenderer(new ButtonRenderer());
@@ -91,8 +92,12 @@ public class ResultsPanel extends JPanel {
             if (isPushed) {
                 //
                 //
-                JOptionPane.showMessageDialog(button, label + ": Ouch!");
+//                JOptionPane.showMessageDialog(button, label + ": Ouch!");
+                LitematicStructureBuilder structure = new LitematicStructureBuilder();
 
+
+
+                System.out.println(table.getSelectedRow());
                 // System.out.println(label + ": Ouch!");
             }
             isPushed = false;

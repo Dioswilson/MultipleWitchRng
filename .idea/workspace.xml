@@ -4,19 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="First commit, a lot left to do">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/test.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/test.java" afterDir="false" />
+    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Added GUI, not finished. Testing with Intellij's UI designer. ErrorWindow not needed">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/IStructureBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/ErrorWindow.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/InputValuesPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/InputValuesPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/ResultsPaneImpl.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/ResultsPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/ResultsPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/test.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/test.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,6 +102,7 @@
       <recent name="com.dioswilson.gui" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Users\Usuario\Desktop\Agus\Code stuff\WitchRng\src\main\java\com\dioswilson\Litematica" />
       <recent name="D:\Users\Usuario\Desktop\Agus\Code stuff\WitchRng\src\main\java\com\dioswilson" />
     </key>
   </component>
@@ -197,7 +195,9 @@
       <workItem from="1674507710290" duration="10154000" />
       <workItem from="1674595487067" duration="610000" />
       <workItem from="1674596485223" duration="7329000" />
-      <workItem from="1674604805073" duration="1145000" />
+      <workItem from="1674604805073" duration="1795000" />
+      <workItem from="1674680419473" duration="4301000" />
+      <workItem from="1674693432622" duration="1116000" />
     </task>
     <task id="LOCAL-00001" summary="First commit, a lot left to do">
       <created>1674346010716</created>
@@ -206,7 +206,14 @@
       <option name="project" value="LOCAL" />
       <updated>1674346010716</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added GUI, not finished. Testing with Intellij's UI designer. ErrorWindow not needed">
+      <created>1674606314635</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1674606314635</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,7 +245,8 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="First commit, a lot left to do" />
-    <option name="LAST_COMMIT_MESSAGE" value="First commit, a lot left to do" />
+    <MESSAGE value="Added GUI, not finished. Testing with Intellij's UI designer. ErrorWindow not needed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added GUI, not finished. Testing with Intellij's UI designer. ErrorWindow not needed" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

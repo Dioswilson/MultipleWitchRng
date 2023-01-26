@@ -86,7 +86,7 @@ public class Witch {
             System.out.println(formattedResultText);
             System.out.println("Date: " + new Date().getTime());
             SwingUtilities.invokeLater(()->{
-                ResultsPanel.model.addRow(new Object[]{from,to,iter,advancers,"getBlocksLitematica"});
+                ResultsPanel.model.addRow(new Object[]{from,to,iter,advancers,"Litematica"});
             });
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -165,15 +165,15 @@ public class Witch {
 
                                 for (int packSize1 : mobsPerPack) {
                                     int mobsSpawned = 0;
-                                    HashMap<String, Object> strike1 = spawning(packSize1/*, new Random(seed)*/, specificCall + moreCalls + extraCalls, staticX, staticY, staticZ, chunk, mobsSpawned, height);
+                                    HashMap<String, Object> strike1 = performSpawning(packSize1/*, new Random(seed)*/, specificCall + moreCalls + extraCalls, staticX, staticY, staticZ, chunk, mobsSpawned, height);
                                     mobsSpawned = (int) strike1.get("mobs");
                                     if (mobsSpawned < 4) {
                                         for (int packSize2 : mobsPerPack) {
-                                            HashMap<String, Object> strike2 = spawning(packSize2/*, new Random(seed)*/, (int) strike1.get("calls"), staticX, staticY, staticZ, chunk, (int) strike1.get("mobs"), height);
+                                            HashMap<String, Object> strike2 = performSpawning(packSize2/*, new Random(seed)*/, (int) strike1.get("calls"), staticX, staticY, staticZ, chunk, (int) strike1.get("mobs"), height);
                                             mobsSpawned = (int) strike2.get("mobs");
                                             if (mobsSpawned < 4) {
                                                 for (int packSize3 : mobsPerPack) {
-                                                    HashMap<String, Object> strike3 = spawning(packSize3/*, new Random(seed)*/, (int) strike2.get("calls"), staticX, staticY, staticZ, chunk, (int) strike2.get("mobs"), height);
+                                                    HashMap<String, Object> strike3 = performSpawning(packSize3/*, new Random(seed)*/, (int) strike2.get("calls"), staticX, staticY, staticZ, chunk, (int) strike2.get("mobs"), height);
                                                     mobsSpawned = (int) strike3.get("mobs");
                                                     differentCallsTemp.add((int) strike3.get("calls"));
                                                     if (mobsSpawned >= 3) {//Perfect is 4
@@ -273,8 +273,42 @@ public class Witch {
 
 
     }
+    public int simulatePackSpawns(int staticX,int staticY, int staticZ, Chunk chunk,int height, int prevCalls, HashSet<Integer> differentCallsTemp) {
+        int spawns=0;
+        for (int packSize1 : mobsPerPack) {
+            int mobsSpawned = 0;
+            HashMap<String, Object> strike1 = performSpawning(packSize1/*, new Random(seed)*/, prevCalls, staticX, staticY, staticZ, chunk, mobsSpawned, height);
+            mobsSpawned = (int) strike1.get("mobs");
+            if (mobsSpawned < 4) {
+                for (int packSize2 : mobsPerPack) {
+                    HashMap<String, Object> strike2 = performSpawning(packSize2/*, new Random(seed)*/, (int) strike1.get("calls"), staticX, staticY, staticZ, chunk, (int) strike1.get("mobs"), height);
+                    mobsSpawned = (int) strike2.get("mobs");
+                    if (mobsSpawned < 4) {
+                        for (int packSize3 : mobsPerPack) {
+                            HashMap<String, Object> strike3 = performSpawning(packSize3/*, new Random(seed)*/, (int) strike2.get("calls"), staticX, staticY, staticZ, chunk, (int) strike2.get("mobs"), height);
+                            mobsSpawned = (int) strike3.get("mobs");
+                            differentCallsTemp.add((int) strike3.get("calls"));
+                            if (mobsSpawned >= 3) {//Perfect is 4
+                                spawns++;
+                            }
+                        }
+                    }
+                    else {
+                        differentCallsTemp.add((int) strike2.get("calls"));
+                        spawns += 4;
+                    }
+                }
+            }
+            else {
+                differentCallsTemp.add((int) strike1.get("calls"));
+                spawns += 16;
+            }
 
-    public HashMap<String, Object> spawning(int value/*, Random rand*/, int calls, int staticX, int staticY, int staticZ, Chunk chunk, int spawnedMobs, int height) {
+        }
+        return spawns;
+    }
+
+    public HashMap<String, Object> performSpawning(int value/*, Random rand*/, int calls, int staticX, int staticY, int staticZ, Chunk chunk, int spawnedMobs, int height) {
         Random rand = new Random(seed);
 
         int x = staticX;
