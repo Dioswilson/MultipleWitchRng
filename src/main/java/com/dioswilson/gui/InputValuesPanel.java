@@ -1,11 +1,9 @@
 package com.dioswilson.gui;
 
-import com.dioswilson.Main;
 import com.dioswilson.SeedFinder;
 import com.dioswilson.minecraft.Chunk;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -14,7 +12,11 @@ import java.util.List;
 
 public class InputValuesPanel extends JPanel {
 
+    private JFormattedTextField seedTextField;
+    private JFormattedTextField playerX;
+    private JFormattedTextField playerZ;
     public static JButton searchButton;
+    private List<Chunk> witchChunks;
 
     public InputValuesPanel() throws HeadlessException {
 
@@ -25,11 +27,11 @@ public class InputValuesPanel extends JPanel {
         numberFormat.setGroupingUsed(false);
 
         JPanel topPanel = new JPanel();
-        JFormattedTextField seedTextField = new JFormattedTextField(numberFormat);
-        seedTextField.setColumns(15);
-        seedTextField.setText("Enter seed here");
+        this.seedTextField = new JFormattedTextField(numberFormat);
+        this.seedTextField.setColumns(15);
+        this.seedTextField.setText("Enter seed here");
 
-        topPanel.add(seedTextField);
+        topPanel.add(this.seedTextField);
         topPanel.add(new JLabel("Max advancers: "));
         JFormattedTextField maxAdvancers = new JFormattedTextField(numberFormat);
         maxAdvancers.setValue(0L);
@@ -211,9 +213,9 @@ public class InputValuesPanel extends JPanel {
 
         c.gridx = 1;
 
-        JFormattedTextField playerX = new JFormattedTextField(numberFormat);
-        playerX.setColumns(5);
-        playerX.setHorizontalAlignment(JTextField.CENTER);
+        this.playerX = new JFormattedTextField(numberFormat);
+        this.playerX.setColumns(5);
+        this.playerX.setHorizontalAlignment(JTextField.CENTER);
 
         bottom.add(playerX, c);
 
@@ -223,9 +225,9 @@ public class InputValuesPanel extends JPanel {
 
         c.gridx = 3;
 
-        JFormattedTextField playerZ = new JFormattedTextField(numberFormat);
-        playerZ.setColumns(5);
-        playerZ.setHorizontalAlignment(JTextField.CENTER);
+        this.playerZ = new JFormattedTextField(numberFormat);
+        this.playerZ.setColumns(5);
+        this.playerZ.setHorizontalAlignment(JTextField.CENTER);
 
         bottom.add(playerZ, c);
 
@@ -238,7 +240,7 @@ public class InputValuesPanel extends JPanel {
 
             if (!SeedFinder.running) {
                 if (seedTextField.getValue() != null) {
-                    List<Chunk> witchChunks = new ArrayList<>();
+                    witchChunks = new ArrayList<>();
                     if (wh1X.getValue() != null && wh1Z.getValue() != null) {
                         witchChunks.add(new Chunk((int) (long) wh1X.getValue(), (int) (long) wh1Z.getValue()));
                     }
@@ -271,22 +273,6 @@ public class InputValuesPanel extends JPanel {
                     JOptionPane.showMessageDialog(searchButton, "You need to insert a seed");
 
                 }
-
-
-//                new SeedFinder(playerX, playerZ, maxAdvancers, );
-//                   (new Main()).Main();
-//                    Main.stop = false;
-//                    Main.running = true;
-//                    searchButton.setText("Stop");
-//                    try {
-//                        Main.textArea.setText("");
-//                        String seedField = Main.seedTextField.getText();
-//                        Main.seed = Long.valueOf(Long.parseLong(seedField)).longValue();
-//                    } catch (Exception exception) {
-//                        searchButton.setText("Search");
-//                        Main.running = false;
-//                        Main.textArea.setText("That is not a seed you mongrel.");
-//                    }
             }
             else {
                 SeedFinder.stop = true;
@@ -299,5 +285,22 @@ public class InputValuesPanel extends JPanel {
         add(bottom, BorderLayout.SOUTH);
 
         this.setVisible(true);
+    }
+
+
+    public long getSeed() {
+        return (long) seedTextField.getValue();
+    }
+
+    public int getPlayerX() {
+        return (int) (long) this.playerX.getValue();
+    }
+
+    public int getPlayerZ() {
+        return (int) (long) this.playerZ.getValue();
+    }
+
+    public List<Chunk> getWitchChunks() {
+        return witchChunks;
     }
 }

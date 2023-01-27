@@ -6,8 +6,10 @@ import com.dioswilson.minecraft.Chunk;
 import com.seedfinding.mcbiome.source.OverworldBiomeSource;
 import com.seedfinding.mccore.version.MCVersion;
 
+import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
@@ -25,9 +27,6 @@ public class Main {
     public static long seed;
 
     private Set<Chunk> chunksForSpawning = new HashSet<>();
-
-
-
 
 
 //    private static final int WIDTH = 400;
@@ -52,18 +51,20 @@ public class Main {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-//        frame.setSize(550, 500);
+        frame.setSize(550, 500);
         frame.setDefaultCloseOperation(3);
-
+//            frame.setLayout(new FlowLayout());
 
         JTabbedPane tabbedPane = new JTabbedPane();
+//        tabbedPane.setLayout(new FlowLayout());
+        InputValuesPanel inputValuesPanel = new InputValuesPanel();
 
-        tabbedPane.add("Input Values", new InputValuesPanel());
-        tabbedPane.add("Results", new ResultsPanel());
+        tabbedPane.add("Input Values", inputValuesPanel);
+        tabbedPane.add("Results", new ResultsPanel(inputValuesPanel));
 
         tabbedPane.setVisible(true);
         frame.add(tabbedPane);
-        frame.pack();
+//        frame.pack();
         frame.setVisible(true);
 
 

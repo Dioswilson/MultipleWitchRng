@@ -1,18 +1,21 @@
 package com.dioswilson.gui;
 
-import com.dioswilson.Litematica.LitematicStructureBuilder;
+import com.dioswilson.SeedFinder;
 
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ResultsPanel extends JPanel {
     public static DefaultTableModel model;
     JTable table;
-    public ResultsPanel() {
-        model = new DefaultTableModel(new String[]{"From", "To", "Heightmap", "Advancers",""}, 0)/*{
+    private InputValuesPanel dataPanel;
+
+    public ResultsPanel(InputValuesPanel dataPanel) {
+        this.dataPanel = dataPanel;
+
+        setLayout(new BorderLayout());
+        model = new DefaultTableModel(new String[]{"From", "To", "Heightmap", "Advancers", "Litematica"}, 0)/*{
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -23,19 +26,20 @@ public class ResultsPanel extends JPanel {
 //        model.addRow(new String[]{"kljdsf","lkajhdjdhf","ljhdfkjh","khjh"});
 //        model.setColumnIdentifiers(new String[]{"From", "To", "Heightmap", "Advancers",""});
 
-       table = new JTable(model);
-        table.getColumnModel().getColumn(0).setPreferredWidth(200);
-        table.getColumnModel().getColumn(1).setPreferredWidth(200);
+        table = new JTable(model);
+        table.getColumnModel().getColumn(0).setPreferredWidth(250);
+        table.getColumnModel().getColumn(1).setPreferredWidth(250);
         table.getColumnModel().getColumn(2).setPreferredWidth(150);
         table.getColumnModel().getColumn(3).setPreferredWidth(100);
         table.getColumnModel().getColumn(4).setPreferredWidth(175);
 
 
-        table.getColumn("").setCellRenderer(new ButtonRenderer());
-        table.getColumn("").setCellEditor(new ButtonEditor(new JCheckBox()));
+        table.getColumn("Litematica").setCellRenderer(new ButtonRenderer());
+        table.getColumn("Litematica").setCellEditor(new ButtonEditor(new JCheckBox()));
 
         add(new JScrollPane(table));
     }
+
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
         public ButtonRenderer() {
@@ -47,7 +51,8 @@ public class ResultsPanel extends JPanel {
             if (isSelected) {
                 setForeground(table.getSelectionForeground());
                 setBackground(table.getSelectionBackground());
-            } else {
+            }
+            else {
                 setForeground(table.getForeground());
                 setBackground(UIManager.getColor("Button.background"));
             }
@@ -55,6 +60,7 @@ public class ResultsPanel extends JPanel {
             return this;
         }
     }
+
     class ButtonEditor extends DefaultCellEditor {
         protected JButton button;
 
@@ -66,10 +72,8 @@ public class ResultsPanel extends JPanel {
             super(checkBox);
             button = new JButton();
             button.setOpaque(true);
-            button.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    fireEditingStopped();
-                }
+            button.addActionListener(e -> {
+                fireEditingStopped();
             });
         }
 
@@ -78,7 +82,8 @@ public class ResultsPanel extends JPanel {
             if (isSelected) {
                 button.setForeground(table.getSelectionForeground());
                 button.setBackground(table.getSelectionBackground());
-            } else {
+            }
+            else {
                 button.setForeground(table.getForeground());
                 button.setBackground(table.getBackground());
             }
@@ -93,11 +98,15 @@ public class ResultsPanel extends JPanel {
                 //
                 //
 //                JOptionPane.showMessageDialog(button, label + ": Ouch!");
-                LitematicStructureBuilder structure = new LitematicStructureBuilder();
-
-
-
-                System.out.println(table.getSelectedRow());
+//                LitematicStructureBuilder structure = new LitematicStructureBuilder();
+//                System.out.println(dataPanel.getPlayerX());
+//                System.out.println(table.getSelectedRow());
+                int selectedRow=table.getSelectedRow();
+                String[] from = ((String)table.getValueAt(selectedRow, 0)).split(",");
+                int witchX = Integer.parseInt(from[0].split(":")[1]);
+                int witchZ = Integer.parseInt(from[1].split(":")[1]);
+                int advancers = Integer.parseInt((String) table.getValueAt(selectedRow,3));
+                new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(),advancers,dataPanel.getWitchChunks(),dataPanel.getSeed(),witchX,witchZ).start();
                 // System.out.println(label + ": Ouch!");
             }
             isPushed = false;

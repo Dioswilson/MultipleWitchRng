@@ -5,7 +5,6 @@ import com.dioswilson.minecraft.Chunk;
 import com.seedfinding.mcbiome.source.OverworldBiomeSource;
 import com.seedfinding.mccore.version.MCVersion;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,9 +14,9 @@ import java.util.concurrent.Semaphore;
 
 public class SeedFinder extends Thread {
 
-    static final int konst = 10387319;
+    static final int KONST = 10387319;
 
-    static final int radius = 23437;//30M
+    static final int RADIUS = 23437;//30M
 
     public long seed;
     private int playerX;
@@ -26,25 +25,56 @@ public class SeedFinder extends Thread {
     private int maxAdvancers;
     private Set<Chunk> chunksForSpawning = new HashSet<>();
 
-    private List<Chunk> witchChunks = new ArrayList<>();
+    private List<Chunk> witchChunks;
+    public HashSet<Chunk> neighbourChunks = new HashSet<>();
+
+    private Integer witchX;
+    private Integer witchZ;
     private Semaphore semaphore = new Semaphore(1);
     public static boolean stop = true;
     public static boolean running;
 
 
-    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed) {
-
+    public SeedFinder(int playerX, int playerZ, List<Chunk> witchChunks, long seed) {
+        this.seed = seed;
         this.playerX = playerX;
         this.playerZ = playerZ;
-        this.maxAdvancers = maxAdvancers;
         this.witchChunks = witchChunks;
-        this.seed = seed;
+
+        for (Chunk chunk : witchChunks) {
+            for (int i = -1; i < 1; i++) {
+                for (int j = -1; j < 1; j++) {
+                    if (i != 0 && j != 0) {
+                        this.neighbourChunks.add(new Chunk(chunk.getX() + i, chunk.getZ() + j));
+                    }
+                }
+            }
+        }
     }
+
+    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed) {
+
+        this(playerX, playerZ, witchChunks, seed);
+        this.maxAdvancers = maxAdvancers;
+
+    }
+
+    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed, int witchX, int witchZ) {
+        this(playerX, playerZ, maxAdvancers, witchChunks, seed);
+        this.witchX = witchX;
+        this.witchZ = witchZ;
+    }
+
 
     public void run() {
         try {
             getChunksForSpawning();
-            seedLoop();
+            if (this.witchX==null) {
+                seedLoop();
+            }
+            else {
+                setRandomSeed(this.witchX/1280,this.witchZ/1280,this.KONST,this.seed);//Don't use this one, make a similar one but with other mehtod which takes advancer as parameter
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -72,7 +102,7 @@ public class SeedFinder extends Thread {
         int dj = 0;//1
         int segmentLength = 1;//739
         int segmentPassed = 0;//0
-//
+
 //        this.witchChunks.add(new Chunk(22, 23));
 //        this.witchChunks.add(new Chunk(23, 33));
 //        this.witchChunks.add(new Chunk(32, 22));
@@ -81,7 +111,7 @@ public class SeedFinder extends Thread {
 //        final ExecutorService threadExecutorService = Executors.newFixedThreadPool(8);
         final ExecutorService threadExecutorService = Executors.newCachedThreadPool();
 
-        while (x < radius && !stop) {
+        while (x < RADIUS && !stop) {
             if (Runtime.getRuntime().freeMemory() >= 62914560) {
                 int finalX = x;
                 int finalZ = z;
@@ -119,8 +149,8 @@ public class SeedFinder extends Thread {
 
 
     public void findAt(int x, int z) {
-//        setRandomSeed(x, z, konst, seed);
-        setRandomSeed(176640 / 1280, -147200 / 1280, konst, seed); //2 Witch 0.75 call with 1  and 2 in perfect  0 advancers TEST /rng setseed 142585912046496
+//        setRandomSeed(x, z, this.KONST, this.seed);
+        setRandomSeed(176640 / 1280, -147200 / 1280, KONST, seed); //2 Witch 0.75 call with 1  and 2 in perfect  0 advancers TEST /rng setseed 142585912046496
 //        setRandomSeed(-427520 / 1280, 268800 / 1280, konst, seed); //3 Witch 0.75 call with 1  and 2 in perfect  1392 advancers /rng setseed 280202168971435
 //        setRandomSeed(-12800/1280, 6400/1280, konst, seed); //4 Witch 0.55 call with 3  and 4 in perfect  1969 advancers /rng setseed 12905031800008
 //        setRandomSeed(-1036800/1280, -673280/1280, konst, seed); //3 Witch 0.55 call with 3  and 4 in perfect   /rng setseed 142569256215019
@@ -139,7 +169,7 @@ public class SeedFinder extends Thread {
     public void setRandomSeed(int x, int z, int konstant, long seed) {
         long i = x * 341873128712L + z * 132897987541L + seed + konstant;
         OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, seed);
-        Witch witch = new Witch(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.chunksForSpawning,this.maxAdvancers);
+        Witch witch = new Witch(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers);
         witch.initialize();
     }
 }
