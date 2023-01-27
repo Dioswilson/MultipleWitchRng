@@ -1,41 +1,43 @@
 package com.dioswilson;
 
+import com.dioswilson.Litematica.LitematicStructureBuilder;
 import com.dioswilson.gui.ResultsPanel;
 import com.dioswilson.minecraft.BlockPos;
 import com.dioswilson.minecraft.Chunk;
 import com.seedfinding.mcbiome.source.OverworldBiomeSource;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class Witch {
 
-    public final int[] heightMap = {80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256, 272};
+    private final int[] heightMap = {80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256, 272};
     //	public int[] heightMap = {176, 256};
-    public final int[] mobsPerPack = {1, 2, 3, 4};
-    public long seed;
+    private final int[] mobsPerPack = {1, 2, 3, 4};
+    private long seed;
     //    public Chunk[] witchChunks;
-    public List<Chunk> witchChunks = new ArrayList<>();
-    public HashSet<Chunk> neighbourChunks = new HashSet<>();
+    private List<Chunk> witchChunks = new ArrayList<>();
+    private HashSet<Chunk> neighbourChunks = new HashSet<>();
 
 
     //    public List<BlockPos> positions = new ArrayList<>();
-    public Set<BlockPos> positions = new HashSet<>();
+    private Set<BlockPos> positions = new HashSet<>();
     Set<BlockPos> blocksToFill = new HashSet<>();
 
 
-    public int[] finalHeightMap;
+    private int[] finalHeightMap;
 
     // vanilla
-    public final int offSetX = 6;
-    public final int offSetZ = 8;
+    private final int offSetX = 6;
+    private final int offSetZ = 8;
 
-    public final int witchHutMinHeight = 64;
-    public final int witchHutMaxHeight = 70;
-    public int areaMansionX;
-    public int areaMansionZ;
+    private final int witchHutMinHeight = 64;
+    private final int witchHutMaxHeight = 70;
+    private int areaMansionX;
+    private int areaMansionZ;
 
     private final OverworldBiomeSource biomeSource;
     private Semaphore semaphore;
@@ -43,7 +45,7 @@ public class Witch {
     private int maxAdvancers;
     private Set<Chunk> eligibleChunksForSpawning = new HashSet<>();
 
-    public Witch(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks,Set<Chunk>neighbourChunks ,Set<Chunk> chunksForSpawning, int maxAdvancers) {
+    public Witch(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxAdvancers) {
 
 //        System.out.println("Free memory init = "+(Runtime.getRuntime().freeMemory()));
         this(seed, biomeSource, witchChunks, neighbourChunks, chunksForSpawning);
@@ -441,7 +443,7 @@ public class Witch {
 
                     if (validSpawns >= callsAmount * 0.75 / (i + 1)) {
 //                        System.out.println("chunks++");
-//                        this.finalHeightMap[i] = height;
+                        this.finalHeightMap[i] = height;
 //                    System.out.println("Height: "+height+" i: "+i);
                         validChunks++;
                         break;//TODO: It only uses the first height it finds for a chunk
@@ -458,41 +460,42 @@ public class Witch {
             else {
                 int height = 0;
 
-                    differentCallsTemp.clear();
-                    for (int specificCall : differentCalls) {
-                        if (!this.neighbourChunks.contains(chunk)) {
-                            height = 16;
+                differentCallsTemp.clear();
+                for (int specificCall : differentCalls) {
+                    if (!this.neighbourChunks.contains(chunk)) {
+                        height = 16;
+                    }
+                    else {
+                        height = 80;
+                    }
+                    boolean gettingHeight = true;
+                    while (gettingHeight) {
+                        BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
+                        int yValue = blockpos.getY();
+                        if (((yValue + 1) % 16) != 0) {
+                            gettingHeight = false;
                         }
                         else {
-                            height=80;
-                        }
-                        boolean gettingHeight = true;
-                        while (gettingHeight) {
-                            BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
-                            int yValue = blockpos.getY();
-                            if (((yValue + 1) % 16) != 0) {
-                                gettingHeight = false;
-                            }
-                            else {
-                                height += 16;
-                            }
+                            height += 16;
                         }
                     }
+                }
 
-                    for (int specificCall : differentCalls) {
-                        BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
-                        this.blocksToFill.add(blockpos);
-                        differentCallsTemp.add(specificCall + 3);
-                    }
-                    differentCalls.clear();
-                    differentCalls.addAll(differentCallsTemp);
-                    differentCallsTemp.clear();
+                for (int specificCall : differentCalls) {
+                    BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
+                    this.blocksToFill.add(blockpos);
+                    differentCallsTemp.add(specificCall + 3);
+                }
+                differentCalls.clear();
+                differentCalls.addAll(differentCallsTemp);
+                differentCallsTemp.clear();
             }
 
         }
+        if (validChunks >= 2) {
 
-        createLitematic();
-
+            createLitematic();
+        }
 
 
     }
@@ -545,6 +548,39 @@ public class Witch {
 
 
     private void createLitematic() {
+        LitematicStructureBuilder structure = new LitematicStructureBuilder();
+        for (BlockPos blockPos : this.positions) {
+            structure.setblock(blockPos.getX(), blockPos.getY() - 1, blockPos.getZ(), "hopper");
+        }
+        for (BlockPos blockPos : this.blocksToFill) {
+            structure.setblock(blockPos.getX(), blockPos.getY(), blockPos.getZ(), "bedrock");
+        }
+        int i = 0;
+        for (Chunk chunk : this.eligibleChunksForSpawning) {
+            if (this.witchChunks.contains(chunk)) {
+                int chunkX = chunk.getX() << 4;
+                int chunkZ = chunk.getZ() << 4;
+                structure.fill(chunkX, this.finalHeightMap[i], chunkZ, chunkX + 15, this.finalHeightMap[i], chunkZ + 15, "stone_slab");
+                i++;
+            }
+            else if (this.neighbourChunks.contains(chunk)) {
+                int chunkX = chunk.getX() << 4;
+                int chunkZ = chunk.getZ() << 4;
+                structure.fill(chunkX, 80, chunkZ, chunkX + 15, 80, chunkZ + 15, "stone_slab");
+            }
+
+        }
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setSelectedFile(new File("witchHutFinder.litematic"));
+        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            structure.save(fileChooser.getSelectedFile());
+        }
     }
 
 }

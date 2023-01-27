@@ -14,11 +14,11 @@ import java.util.concurrent.Semaphore;
 
 public class SeedFinder extends Thread {
 
-    static final int KONST = 10387319;
+    private final int KONST = 10387319;
 
-    static final int RADIUS = 23437;//30M
+    private final int RADIUS = 23437;//30M
 
-    public long seed;
+    private long seed;
     private int playerX;
     private int playerZ;
 
@@ -26,7 +26,7 @@ public class SeedFinder extends Thread {
     private Set<Chunk> chunksForSpawning = new HashSet<>();
 
     private List<Chunk> witchChunks;
-    public HashSet<Chunk> neighbourChunks = new HashSet<>();
+    private HashSet<Chunk> neighbourChunks = new HashSet<>();
 
     private Integer witchX;
     private Integer witchZ;
@@ -35,7 +35,8 @@ public class SeedFinder extends Thread {
     public static boolean running;
 
 
-    public SeedFinder(int playerX, int playerZ, List<Chunk> witchChunks, long seed) {
+    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed) {
+
         this.seed = seed;
         this.playerX = playerX;
         this.playerZ = playerZ;
@@ -50,11 +51,7 @@ public class SeedFinder extends Thread {
                 }
             }
         }
-    }
 
-    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed) {
-
-        this(playerX, playerZ, witchChunks, seed);
         this.maxAdvancers = maxAdvancers;
 
     }
@@ -73,7 +70,7 @@ public class SeedFinder extends Thread {
                 seedLoop();
             }
             else {
-                setRandomSeed(this.witchX/1280,this.witchZ/1280,this.KONST,this.seed);//Don't use this one, make a similar one but with other mehtod which takes advancer as parameter
+                setRandomSeedWithAdvancer(this.witchX/1280,this.witchZ/1280,this.KONST,this.seed,this.maxAdvancers);//Don't use this one, make a similar one but with other mehtod which takes advancer as parameter
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -172,4 +169,12 @@ public class SeedFinder extends Thread {
         Witch witch = new Witch(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers);
         witch.initialize();
     }
+
+    public void setRandomSeedWithAdvancer(int x, int z, int konstant, long seed,int advancers) {
+        long i = x * 341873128712L + z * 132897987541L + seed + konstant;
+        OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, seed);
+        Witch witch = new Witch(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers);
+        witch.getBlocksPositions(4+advancers);
+    }
+
 }
