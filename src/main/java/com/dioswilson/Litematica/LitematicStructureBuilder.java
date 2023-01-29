@@ -158,7 +158,7 @@ public class LitematicStructureBuilder implements IStructureBuilder {
         metadata.putLong("TotalBlocks", totalBlocks);
         metadata.putString("Author", "RaysWorks"); // lol
         metadata.putLong("TotalVolume", (long) (maxX - minX + 1) * (maxY - minY + 1) * (maxZ - minZ + 1));
-        metadata.putString("Name", "Cluster Chunks");
+        metadata.putString("Name", "MultipleWitchHutFinder");
         rootTag.put("Metadata", metadata);
         CompoundTag regions = new CompoundTag();
         CompoundTag region = new CompoundTag();

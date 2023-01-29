@@ -19,7 +19,7 @@ public class Witch {
     private final int[] mobsPerPack = {1, 2, 3, 4};
     private long seed;
     //    public Chunk[] witchChunks;
-    private List<Chunk> witchChunks = new ArrayList<>();
+    private HashSet<Chunk> witchChunks = new HashSet<>();
     private HashSet<Chunk> neighbourChunks = new HashSet<>();
 
 
@@ -45,6 +45,10 @@ public class Witch {
     private int maxAdvancers;
     private Set<Chunk> eligibleChunksForSpawning = new HashSet<>();
 
+    private int succesfulSpawns;
+    private int succesCalls;
+
+    //TODO: Add thing to see which one is better
     public Witch(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxAdvancers) {
 
 //        System.out.println("Free memory init = "+(Runtime.getRuntime().freeMemory()));
@@ -77,6 +81,7 @@ public class Witch {
         String iter = Arrays.toString(this.finalHeightMap);
         String advancers = "" + this.advancers;
         String tp = " /tp " + fromX + " 150 " + fromZ + "\n";
+        String quality="S:"+this.succesfulSpawns+"|C:"+this.succesCalls;
 
         try {
             this.semaphore.acquire();
@@ -85,7 +90,7 @@ public class Witch {
             System.out.println(formattedResultText);
             System.out.println("Date: " + new Date().getTime());
             SwingUtilities.invokeLater(() -> {
-                ResultsPanel.model.addRow(new Object[]{from, to, iter, advancers, "Download"});
+                ResultsPanel.model.addRow(new Object[]{from, to, iter, advancers,quality, "Download"});
             });
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -124,6 +129,7 @@ public class Witch {
 //            calculateRandomChunkPositions(witchChunks.size(), 4 + i);
             calculateRandomChunkPositionsFull(4 + i);
         }
+//        System.gc();
 
     }
 
@@ -137,6 +143,9 @@ public class Witch {
         int i = 0;
         //Falta tener en cuenta los chunks que no sirven
         int extraCalls = 0;
+
+        this.succesfulSpawns = 0;
+        this.succesCalls = 0;
         for (Chunk chunk : this.eligibleChunksForSpawning) {
 
             int callsAmount = differentCalls.size();//If ==0 then can optimize skipping, it means previous chunk was useless
@@ -147,8 +156,9 @@ public class Witch {
 
                     for (int height : heightMap) {
 
-                        int validSpawns = 0;
 
+                        int validSpawns = 0;
+                        int spawns=0;
                         for (int specificCall : differentCalls) {
 
                             BlockPos blockpos = getRandomChunkPosition(specificCall + extraCalls, chunk.getX(), chunk.getZ(), height);
@@ -160,7 +170,7 @@ public class Witch {
                                 int staticX = blockpos.getX();
                                 int staticZ = blockpos.getZ();
 
-                                int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, height, specificCall + moreCalls + extraCalls, differentCallsTemp);
+                                spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, height, specificCall + moreCalls + extraCalls, differentCallsTemp);
 //                                for (int packSize1 : mobsPerPack) {
 //                                    int mobsSpawned = 0;
 //                                    HashMap<String, Object> strike1 = performSpawning(packSize1/*, new Random(seed)*/, specificCall + moreCalls + extraCalls, staticX, staticY, staticZ, chunk, mobsSpawned, height);
@@ -195,14 +205,17 @@ public class Witch {
                                     validSpawns++;
 //                            System.out.println("valid");
                                 }
+
                             }
                         }
 
-                        if (validSpawns >= callsAmount * 0.75 / (i + 1)) {
+                        if (validSpawns >= callsAmount * 0.75 / (2 * i + 1)) {
 //                        System.out.println("chunks++");
                             this.finalHeightMap[i] = height;
 //                    System.out.println("Height: "+height+" i: "+i);
                             validChunks++;
+                            succesfulSpawns += spawns;
+                            succesCalls += callsAmount;
                             break;//TODO: It only uses the first height it finds for a chunk
                         }
                         differentCallsTemp.clear();
@@ -213,46 +226,13 @@ public class Witch {
                     differentCallsTemp.clear();
                     extraCalls = 0;
                     i++;
+                    if (i > this.witchChunks.size()) {
+                        break;
+                    }
                 }
                 else {
 
-                    extraCalls += 3;// Need to figure how to know where to place blocks
-
-//                    //Todo: use this to know where to fill if you know
-//                    int height = 0;
-//
-//                    differentCallsTemp.clear();
-//                    for (int specificCall : differentCalls) {
-//                        if (!this.neighbourChunks.contains(chunk)) {
-//                            height = 16;
-//                        }
-//                        else {
-//                            height=80;
-//                        }
-//                        boolean gettingHeight = true;
-//                        while (gettingHeight) {
-//                            BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
-//                            int yValue = blockpos.getY();
-//                            if (((yValue + 1) % 16) != 0) {
-//                                gettingHeight = false;
-//                            }
-//                            else {
-//                                height += 16;
-//                            }
-//                        }
-//                    }
-//
-//                    for (int specificCall : differentCalls) {
-//                        BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
-//                        this.blocksToFill.add(blockpos);
-//                        differentCallsTemp.add(specificCall + 3);
-//                    }
-//                    differentCalls.clear();
-//                    differentCalls.addAll(differentCallsTemp);
-//                    differentCallsTemp.clear();
-
-//                  printBlocksForCommand("solidBlocks",blocksToFill);
-
+                    extraCalls += 3;
 
                 }
 
@@ -263,7 +243,7 @@ public class Witch {
 
         }
 
-        if (validChunks >= 2) {
+        if (validChunks >= this.witchChunks.size()) {
             this.advancers = calls - 4;
             print();
         }
@@ -404,7 +384,7 @@ public class Witch {
     }
 
 
-    public void getBlocksPositions(int calls) {
+    public void getBlocksPositions(int calls, int playerX, int playerZ) {
 
         int validChunks = 0;
         HashSet<Integer> differentCalls = new HashSet<>();
@@ -441,7 +421,7 @@ public class Witch {
                         }
                     }
 
-                    if (validSpawns >= callsAmount * 0.75 / (i + 1)) {
+                    if (validSpawns >= callsAmount * 0.75 / (2*i + 1)) {
 //                        System.out.println("chunks++");
                         this.finalHeightMap[i] = height;
 //                    System.out.println("Height: "+height+" i: "+i);
@@ -456,11 +436,12 @@ public class Witch {
                 differentCallsTemp.clear();
 //                extraCalls = 0;
                 i++;
+                if (i > this.witchChunks.size()) {
+                    break;
+                }
             }
             else {
                 int height = 0;
-
-                differentCallsTemp.clear();
                 for (int specificCall : differentCalls) {
                     if (!this.neighbourChunks.contains(chunk)) {
                         height = 16;
@@ -492,9 +473,9 @@ public class Witch {
             }
 
         }
-        if (validChunks >= 2) {
+        if (validChunks >= this.witchChunks.size()) {
 
-            createLitematic();
+            createLitematic(playerX, playerZ);
         }
 
 
@@ -547,7 +528,7 @@ public class Witch {
     }
 
 
-    private void createLitematic() {
+    private void createLitematic(int playerX, int playerZ) {
         LitematicStructureBuilder structure = new LitematicStructureBuilder();
         for (BlockPos blockPos : this.positions) {
             structure.setblock(blockPos.getX(), blockPos.getY() - 1, blockPos.getZ(), "hopper");
@@ -560,16 +541,21 @@ public class Witch {
             if (this.witchChunks.contains(chunk)) {
                 int chunkX = chunk.getX() << 4;
                 int chunkZ = chunk.getZ() << 4;
-                structure.fill(chunkX, this.finalHeightMap[i], chunkZ, chunkX + 15, this.finalHeightMap[i], chunkZ + 15, "stone_slab");
+                int height = this.finalHeightMap[i];
+                structure.fill(chunkX, 78, chunkZ, chunkX + 15, 78, chunkZ + 15, "stone_slab");
+                if (height > 80) {
+                    structure.fill(chunkX, height - 17, chunkZ, chunkX + 15, height - 17, chunkZ + 15, "stone_slab");
+                }
                 i++;
             }
             else if (this.neighbourChunks.contains(chunk)) {
                 int chunkX = chunk.getX() << 4;
                 int chunkZ = chunk.getZ() << 4;
-                structure.fill(chunkX, 80, chunkZ, chunkX + 15, 80, chunkZ + 15, "stone_slab");
+                structure.fill(chunkX, 78, chunkZ, chunkX + 15, 78, chunkZ + 15, "stone_slab");
             }
-
         }
+
+        structure.setblock(playerX, 63, playerZ, "glass");
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

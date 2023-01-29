@@ -8,16 +8,26 @@ import java.awt.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class InputValuesPanel extends JPanel {
 
     private JFormattedTextField seedTextField;
+    private JFormattedTextField wh1X;
+    private JFormattedTextField wh1Z;
+    private JFormattedTextField wh2X;
+    private JFormattedTextField wh2Z;
+    private JFormattedTextField wh3X;
+    private JFormattedTextField wh3Z;
+    private JFormattedTextField wh4X;
+    private JFormattedTextField wh4Z;
     private JFormattedTextField playerX;
     private JFormattedTextField playerZ;
     public static JButton searchButton;
-    private List<Chunk> witchChunks;
+    private List<Chunk> witchChunks = new ArrayList<>();
 
+    //Todo checkboxes seleccionando CPU usage
     public InputValuesPanel() throws HeadlessException {
 
         this.setLayout(new BorderLayout());
@@ -66,7 +76,7 @@ public class InputValuesPanel extends JPanel {
 
         c.gridy = 2;
 
-        JFormattedTextField wh1X = new JFormattedTextField(numberFormat);
+        wh1X = new JFormattedTextField(numberFormat);
         wh1X.setColumns(5);
         wh1X.setHorizontalAlignment(JTextField.CENTER);
 
@@ -79,7 +89,7 @@ public class InputValuesPanel extends JPanel {
         witchInject.add(new JLabel("PosZ", SwingConstants.CENTER), c);
 
         c.gridy = 2;
-        JFormattedTextField wh1Z = new JFormattedTextField(numberFormat);
+        wh1Z = new JFormattedTextField(numberFormat);
         wh1Z.setColumns(5);
         wh1Z.setHorizontalAlignment(JTextField.CENTER);
 
@@ -99,7 +109,7 @@ public class InputValuesPanel extends JPanel {
         witchInject.add(new JLabel("PosX", SwingConstants.CENTER), c);
 
         c.gridy = 2;
-        JFormattedTextField wh2X = new JFormattedTextField(numberFormat);
+        wh2X = new JFormattedTextField(numberFormat);
         wh2X.setColumns(5);
         wh2X.setHorizontalAlignment(JTextField.CENTER);
 
@@ -114,7 +124,7 @@ public class InputValuesPanel extends JPanel {
 
         c.gridy = 2;
 
-        JFormattedTextField wh2Z = new JFormattedTextField(numberFormat);
+        wh2Z = new JFormattedTextField(numberFormat);
         wh2Z.setColumns(5);
         wh2Z.setHorizontalAlignment(JTextField.CENTER);
 
@@ -136,7 +146,7 @@ public class InputValuesPanel extends JPanel {
 
         c.gridy = 5;
 
-        JFormattedTextField wh3X = new JFormattedTextField(numberFormat);
+        wh3X = new JFormattedTextField(numberFormat);
         wh3X.setColumns(5);
         wh3X.setHorizontalAlignment(JTextField.CENTER);
 
@@ -150,7 +160,7 @@ public class InputValuesPanel extends JPanel {
 
         c.gridy = 5;
 
-        JFormattedTextField wh3Z = new JFormattedTextField(numberFormat);
+        wh3Z = new JFormattedTextField(numberFormat);
         wh3Z.setColumns(5);
         wh3Z.setHorizontalAlignment(JTextField.CENTER);
 
@@ -171,7 +181,7 @@ public class InputValuesPanel extends JPanel {
 
         c.gridy = 5;
 
-        JFormattedTextField wh4X = new JFormattedTextField(numberFormat);
+        wh4X = new JFormattedTextField(numberFormat);
         wh4X.setColumns(5);
         wh4X.setHorizontalAlignment(JTextField.CENTER);
 
@@ -186,14 +196,13 @@ public class InputValuesPanel extends JPanel {
 
         c.gridy = 5;
 
-        JFormattedTextField wh4Z = new JFormattedTextField(numberFormat);
+        wh4Z = new JFormattedTextField(numberFormat);
         wh4Z.setColumns(5);
         wh4Z.setHorizontalAlignment(JTextField.CENTER);
 
         witchInject.add(wh4Z, c);
 
-
-        add(witchInject);
+        add(witchInject, BorderLayout.CENTER);
 
 
         JPanel bottom = new JPanel();
@@ -235,30 +244,20 @@ public class InputValuesPanel extends JPanel {
 
         searchButton = new JButton("Start");
 
+        AtomicReference<Double> performace = new AtomicReference<>((double) 1);
 
         searchButton.addActionListener((e -> {
 
             if (!SeedFinder.running) {
                 if (seedTextField.getValue() != null) {
-                    witchChunks = new ArrayList<>();
-                    if (wh1X.getValue() != null && wh1Z.getValue() != null) {
-                        witchChunks.add(new Chunk((int) (long) wh1X.getValue(), (int) (long) wh1Z.getValue()));
-                    }
-                    if (wh2X.getValue() != null && wh2Z.getValue() != null) {
-                        witchChunks.add(new Chunk((int) (long) wh2X.getValue(), (int) (long) wh2Z.getValue()));
-                    }
-                    if (wh3X.getValue() != null && wh3Z.getValue() != null) {
-                        witchChunks.add(new Chunk((int) (long) wh3X.getValue(), (int) (long) wh3Z.getValue()));
-                    }
-                    if (wh4X.getValue() != null && wh4Z.getValue() != null) {
-                        witchChunks.add(new Chunk((int) (long) wh4X.getValue(), (int) (long) wh4Z.getValue()));
-                    }
+                    retireveWithChunks();
                     if (playerX.getValue() != null && playerZ.getValue() != null) {
                         if (witchChunks.size() > 0) {
                             SeedFinder.running = true;
                             SeedFinder.stop = false;
                             searchButton.setText("Stop");
-                            new SeedFinder((int) (long) playerX.getValue(), (int) (long) playerZ.getValue(), (int) (long) maxAdvancers.getValue(), witchChunks, (long) seedTextField.getValue()).start();
+                            ResultsPanel.model.setRowCount(0);
+                            new SeedFinder((int) (long) playerX.getValue(), (int) (long) playerZ.getValue(), (int) (long) maxAdvancers.getValue(), witchChunks, (long) seedTextField.getValue(), performace).start();
                         }
                         else {
                             JOptionPane.showMessageDialog(searchButton, "Input witch huts' chunk coords");
@@ -284,7 +283,115 @@ public class InputValuesPanel extends JPanel {
         bottom.add(searchButton, c);
         add(bottom, BorderLayout.SOUTH);
 
+
+        JPanel performancePanel = new JPanel();
+        performancePanel.setLayout(new BoxLayout(performancePanel, BoxLayout.Y_AXIS));
+        performancePanel.setBorder(BorderFactory.createEmptyBorder(100, 0, 0, 0));
+        performancePanel.add(new JLabel("CPU Usage"));
+
+        JRadioButton veryLow = new JRadioButton();
+        JRadioButton low = new JRadioButton();
+        JRadioButton mid = new JRadioButton();
+        JRadioButton high = new JRadioButton();
+        JRadioButton veryHigh = new JRadioButton();
+
+
+        veryLow.addActionListener(e -> {
+            performace.set(0.25);
+        });
+
+        low.addActionListener(e -> {
+            performace.set(1.0);
+        });
+
+        mid.addActionListener(e -> {
+            performace.set(2.0);
+        });
+
+        mid.addActionListener(e -> {
+            performace.set(20.0);
+        });
+
+        mid.addActionListener(e -> {
+            performace.set(140.0);
+        });
+
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(veryLow);
+        group.add(low);
+        group.add(mid);
+        group.add(high);
+        group.add(veryHigh);
+
+
+        JPanel veryLowPanel = new JPanel();
+        veryLowPanel.setLayout(new BoxLayout(veryLowPanel,BoxLayout.X_AXIS));
+
+        veryLowPanel.add(veryLow);
+        veryLowPanel.add(new JLabel("Very Low"));
+
+        JPanel lowPanel = new JPanel();
+        lowPanel.setLayout(new BoxLayout(lowPanel,BoxLayout.X_AXIS));
+
+        lowPanel.add(low);
+        lowPanel.add(new JLabel("Low"));
+
+
+        JPanel midPanel = new JPanel();
+        midPanel.setLayout(new BoxLayout(midPanel,BoxLayout.X_AXIS));
+
+        midPanel.add(mid);
+        midPanel.add(new JLabel("Mid"));
+
+
+        JPanel highPanel = new JPanel();
+        highPanel.setLayout(new BoxLayout(highPanel,BoxLayout.X_AXIS));
+
+        highPanel.add(high);
+        highPanel.add(new JLabel("High"));
+
+
+        JPanel veryHighPanel = new JPanel();
+        veryHighPanel.setLayout(new BoxLayout(veryHighPanel,BoxLayout.X_AXIS));
+
+        veryHighPanel.add(veryHigh);
+        veryHighPanel.add(new JLabel("Very High"));
+
+        veryLowPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lowPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        midPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        highPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        veryHighPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        performancePanel.add(veryLowPanel);
+        performancePanel.add(lowPanel);
+        performancePanel.add(midPanel);
+        performancePanel.add(highPanel);
+        performancePanel.add(veryHighPanel);
+
+        add(performancePanel, BorderLayout.WEST);
+
+        JPanel dummyPanel = new JPanel();
+        dummyPanel.setBorder(BorderFactory.createEmptyBorder(0,75,0,0));
+        add(dummyPanel,BorderLayout.EAST);
         this.setVisible(true);
+    }
+
+    private void retireveWithChunks() {
+        this.witchChunks.clear();
+        if (wh1X.getValue() != null && wh1Z.getValue() != null) {
+            this.witchChunks.add(new Chunk((int) (long) wh1X.getValue(), (int) (long) wh1Z.getValue()));
+        }
+        if (wh2X.getValue() != null && wh2Z.getValue() != null) {
+            this.witchChunks.add(new Chunk((int) (long) wh2X.getValue(), (int) (long) wh2Z.getValue()));
+        }
+        if (wh3X.getValue() != null && wh3Z.getValue() != null) {
+            this.witchChunks.add(new Chunk((int) (long) wh3X.getValue(), (int) (long) wh3Z.getValue()));
+        }
+        if (wh4X.getValue() != null && wh4Z.getValue() != null) {
+            this.witchChunks.add(new Chunk((int) (long) wh4X.getValue(), (int) (long) wh4Z.getValue()));
+        }
     }
 
 
@@ -301,6 +408,9 @@ public class InputValuesPanel extends JPanel {
     }
 
     public List<Chunk> getWitchChunks() {
+        if (this.witchChunks.isEmpty()) {
+            retireveWithChunks();
+        }
         return witchChunks;
     }
 }

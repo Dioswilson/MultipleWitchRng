@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Added Earthcomputer's litematica generation, changed things in Witch.java">
+    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Added panel for manual litematica generation.More things done, right now testing with performance thing.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/GenerateLitematicPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/SidePanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" afterDir="false" />
@@ -81,13 +84,13 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/Users/Usuario/Desktop/Agus/Code stuff/Tests",
+    "last_opened_file_path": "D:/Users/Usuario/Desktop/Agus/Code stuff/WitchServerTest",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "project.propGUI",
@@ -107,7 +110,7 @@
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="com.dioswilson.Main" />
       <module name="WitchRng.main" />
-      <option name="VM_PARAMETERS" value="-Xmx16000m" />
+      <option name="VM_PARAMETERS" value="-Xmx17000m" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.dioswilson.*" />
@@ -196,7 +199,10 @@
       <workItem from="1674680419473" duration="4301000" />
       <workItem from="1674693432622" duration="1170000" />
       <workItem from="1674767780810" duration="5236000" />
-      <workItem from="1674773243470" duration="7963000" />
+      <workItem from="1674773243470" duration="8556000" />
+      <workItem from="1674853399823" duration="12421000" />
+      <workItem from="1674916373567" duration="4837000" />
+      <workItem from="1674933126216" duration="39498000" />
     </task>
     <task id="LOCAL-00001" summary="First commit, a lot left to do">
       <created>1674346010716</created>
@@ -219,7 +225,14 @@
       <option name="project" value="LOCAL" />
       <updated>1674694595704</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="ResultsPanel has access to InputValuesPanel now, and it creates a new SeedFinder with other constructor.&#10;Neighbour chunks are calculated on chunk finder.&#10;Tidied up things in Witch.java preparing for litematica generation.">
+      <created>1674786326292</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1674786326293</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -253,14 +266,9 @@
     <MESSAGE value="First commit, a lot left to do" />
     <MESSAGE value="Added GUI, not finished. Testing with Intellij's UI designer. ErrorWindow not needed" />
     <MESSAGE value="Added Earthcomputer's litematica generation, changed things in Witch.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Earthcomputer's litematica generation, changed things in Witch.java" />
-  </component>
-  <component name="XDebuggerManager">
-    <watches-manager>
-      <configuration name="Application">
-        <watch expression="this.eligibleChunksForSpawning" language="JAVA" />
-      </configuration>
-    </watches-manager>
+    <MESSAGE value="ResultsPanel has access to InputValuesPanel now, and it creates a new SeedFinder with other constructor.&#10;Neighbour chunks are calculated on chunk finder.&#10;Tidied up things in Witch.java preparing for litematica generation." />
+    <MESSAGE value="Added panel for manual litematica generation.More things done, right now testing with performance thing." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added panel for manual litematica generation.More things done, right now testing with performance thing." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

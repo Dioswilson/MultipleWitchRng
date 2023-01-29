@@ -15,7 +15,7 @@ public class ResultsPanel extends JPanel {
         this.dataPanel = dataPanel;
 
         setLayout(new BorderLayout());
-        model = new DefaultTableModel(new String[]{"From", "To", "Heightmap", "Advancers", "Litematica"}, 0)/*{
+        model = new DefaultTableModel(new String[]{"From", "To", "Heightmap", "Advancers","Quality" ,"Litematica"}, 0)/*{
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -29,9 +29,10 @@ public class ResultsPanel extends JPanel {
         table = new JTable(model);
         table.getColumnModel().getColumn(0).setPreferredWidth(250);
         table.getColumnModel().getColumn(1).setPreferredWidth(250);
-        table.getColumnModel().getColumn(2).setPreferredWidth(150);
+        table.getColumnModel().getColumn(2).setPreferredWidth(200);
         table.getColumnModel().getColumn(3).setPreferredWidth(100);
-        table.getColumnModel().getColumn(4).setPreferredWidth(175);
+        table.getColumnModel().getColumn(4).setPreferredWidth(120);
+        table.getColumnModel().getColumn(5).setPreferredWidth(175);
 
 
         table.getColumn("Litematica").setCellRenderer(new ButtonRenderer());
@@ -95,19 +96,14 @@ public class ResultsPanel extends JPanel {
 
         public Object getCellEditorValue() {
             if (isPushed) {
-                //
-                //
-//                JOptionPane.showMessageDialog(button, label + ": Ouch!");
-//                LitematicStructureBuilder structure = new LitematicStructureBuilder();
-//                System.out.println(dataPanel.getPlayerX());
-//                System.out.println(table.getSelectedRow());
-                int selectedRow=table.getSelectedRow();
-                String[] from = ((String)table.getValueAt(selectedRow, 0)).split(",");
+
+                int selectedRow = table.getSelectedRow();
+                String[] from = ((String) table.getValueAt(selectedRow, 0)).split(",");
                 int witchX = Integer.parseInt(from[0].split(":")[1]);
                 int witchZ = Integer.parseInt(from[1].split(":")[1]);
-                int advancers = Integer.parseInt((String) table.getValueAt(selectedRow,3));
-                new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(),advancers,dataPanel.getWitchChunks(),dataPanel.getSeed(),witchX,witchZ).start();
-                // System.out.println(label + ": Ouch!");
+                int advancers = Integer.parseInt((String) table.getValueAt(selectedRow, 3));
+                new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(), advancers, dataPanel.getWitchChunks(), dataPanel.getSeed(), witchX, witchZ).start();
+
             }
             isPushed = false;
             return new String(label);
