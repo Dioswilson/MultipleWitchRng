@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Added panel for manual litematica generation.More things done, right now testing with performance thing.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/GenerateLitematicPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/SidePanel.java" afterDir="false" />
+    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Changed more stuff, need to figure out Quality">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/InputValuesPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/InputValuesPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/GenerateLitematicPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/GenerateLitematicPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/ResultsPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/ResultsPanel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -77,26 +73,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/Users/Usuario/Desktop/Agus/Code stuff/WitchServerTest",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "project.propGUI",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Users/Usuario/Desktop/Agus/Code stuff/WitchRng&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propGUI&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.dioswilson.gui" />
@@ -202,7 +198,9 @@
       <workItem from="1674773243470" duration="8556000" />
       <workItem from="1674853399823" duration="12421000" />
       <workItem from="1674916373567" duration="4837000" />
-      <workItem from="1674933126216" duration="39498000" />
+      <workItem from="1674933126216" duration="42403000" />
+      <workItem from="1675030731102" duration="7103000" />
+      <workItem from="1675039179094" duration="480000" />
     </task>
     <task id="LOCAL-00001" summary="First commit, a lot left to do">
       <created>1674346010716</created>
@@ -232,7 +230,14 @@
       <option name="project" value="LOCAL" />
       <updated>1674786326293</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added panel for manual litematica generation.More things done, right now testing with performance thing.">
+      <created>1675022748250</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1675022748250</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -268,7 +273,19 @@
     <MESSAGE value="Added Earthcomputer's litematica generation, changed things in Witch.java" />
     <MESSAGE value="ResultsPanel has access to InputValuesPanel now, and it creates a new SeedFinder with other constructor.&#10;Neighbour chunks are calculated on chunk finder.&#10;Tidied up things in Witch.java preparing for litematica generation." />
     <MESSAGE value="Added panel for manual litematica generation.More things done, right now testing with performance thing." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added panel for manual litematica generation.More things done, right now testing with performance thing." />
+    <MESSAGE value="Changed more stuff, need to figure out Quality" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed more stuff, need to figure out Quality" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java</url>
+          <line>201</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

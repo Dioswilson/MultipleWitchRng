@@ -72,9 +72,16 @@ public class GenerateLitematicPanel extends JPanel {
         JButton appendToTable = new JButton("Append To Table");
 
         appendToTable.addActionListener(e -> {
-            SeedFinder seedFinder = new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(), (int) (long) advancersTextField.getValue(), dataPanel.getWitchChunks(), dataPanel.getSeed());
-            seedFinder.getChunksForSpawning();
-            seedFinder.setRandomSeed((int) (long) fromXTextField.getValue() / 1280, (int) (long) fromZTextField.getValue() / 1280);
+            try {
+
+                SeedFinder seedFinder = new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(), (int) (long) advancersTextField.getValue(), dataPanel.getWitchChunks(), dataPanel.getSeed());
+                SeedFinder.stop = false;
+                seedFinder.getChunksForSpawning();
+                seedFinder.setRandomSeed((int) (long) fromXTextField.getValue() / 1280, (int) (long) fromZTextField.getValue() / 1280);
+                SeedFinder.stop = true;
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(generateLitematicButton, "Insert values at \"Input Values\" tab");
+            }
         });
         buttonsPanel.add(appendToTable);
 

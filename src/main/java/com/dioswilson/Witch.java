@@ -46,7 +46,6 @@ public class Witch {
     private Set<Chunk> eligibleChunksForSpawning = new HashSet<>();
 
     private int succesfulSpawns;
-    private int succesCalls;
 
     //TODO: Add thing to see which one is better
     public Witch(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxAdvancers) {
@@ -81,7 +80,7 @@ public class Witch {
         String iter = Arrays.toString(this.finalHeightMap);
         String advancers = "" + this.advancers;
         String tp = " /tp " + fromX + " 150 " + fromZ + "\n";
-        String quality="S:"+this.succesfulSpawns+"|C:"+this.succesCalls;
+        String quality = "S:" + this.succesfulSpawns;
 
         try {
             this.semaphore.acquire();
@@ -90,7 +89,7 @@ public class Witch {
             System.out.println(formattedResultText);
             System.out.println("Date: " + new Date().getTime());
             SwingUtilities.invokeLater(() -> {
-                ResultsPanel.model.addRow(new Object[]{from, to, iter, advancers,quality, "Download"});
+                ResultsPanel.model.addRow(new Object[]{from, to, iter, advancers, quality, "Download"});
             });
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -145,7 +144,6 @@ public class Witch {
         int extraCalls = 0;
 
         this.succesfulSpawns = 0;
-        this.succesCalls = 0;
         for (Chunk chunk : this.eligibleChunksForSpawning) {
 
             int callsAmount = differentCalls.size();//If ==0 then can optimize skipping, it means previous chunk was useless
@@ -156,9 +154,8 @@ public class Witch {
 
                     for (int height : heightMap) {
 
-
+                        int quality = 0;
                         int validSpawns = 0;
-                        int spawns=0;
                         for (int specificCall : differentCalls) {
 
                             BlockPos blockpos = getRandomChunkPosition(specificCall + extraCalls, chunk.getX(), chunk.getZ(), height);
@@ -170,7 +167,7 @@ public class Witch {
                                 int staticX = blockpos.getX();
                                 int staticZ = blockpos.getZ();
 
-                                spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, height, specificCall + moreCalls + extraCalls, differentCallsTemp);
+                                int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, height, specificCall + moreCalls + extraCalls, differentCallsTemp);
 //                                for (int packSize1 : mobsPerPack) {
 //                                    int mobsSpawned = 0;
 //                                    HashMap<String, Object> strike1 = performSpawning(packSize1/*, new Random(seed)*/, specificCall + moreCalls + extraCalls, staticX, staticY, staticZ, chunk, mobsSpawned, height);
@@ -203,6 +200,8 @@ public class Witch {
 //                                }
                                 if (spawns >= (54 / (i * 2 + 1))) {//max 64
                                     validSpawns++;
+                                    quality += spawns / callsAmount;
+
 //                            System.out.println("valid");
                                 }
 
@@ -214,8 +213,7 @@ public class Witch {
                             this.finalHeightMap[i] = height;
 //                    System.out.println("Height: "+height+" i: "+i);
                             validChunks++;
-                            succesfulSpawns += spawns;
-                            succesCalls += callsAmount;
+                            this.succesfulSpawns += quality;// TODO: This number is not super representative
                             break;//TODO: It only uses the first height it finds for a chunk
                         }
                         differentCallsTemp.clear();
@@ -226,7 +224,7 @@ public class Witch {
                     differentCallsTemp.clear();
                     extraCalls = 0;
                     i++;
-                    if (i > this.witchChunks.size()) {
+                    if (i == this.witchChunks.size()) {
                         break;
                     }
                 }
@@ -243,7 +241,7 @@ public class Witch {
 
         }
 
-        if (validChunks >= this.witchChunks.size()) {
+        if (validChunks == this.witchChunks.size()) {
             this.advancers = calls - 4;
             print();
         }
@@ -421,7 +419,7 @@ public class Witch {
                         }
                     }
 
-                    if (validSpawns >= callsAmount * 0.75 / (2*i + 1)) {
+                    if (validSpawns >= callsAmount * 0.75 / (2 * i + 1)) {
 //                        System.out.println("chunks++");
                         this.finalHeightMap[i] = height;
 //                    System.out.println("Height: "+height+" i: "+i);
@@ -436,7 +434,7 @@ public class Witch {
                 differentCallsTemp.clear();
 //                extraCalls = 0;
                 i++;
-                if (i > this.witchChunks.size()) {
+                if (i == this.witchChunks.size()) {
                     break;
                 }
             }
@@ -465,6 +463,11 @@ public class Witch {
                 for (int specificCall : differentCalls) {
                     BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
                     this.blocksToFill.add(blockpos);
+                    if (blockpos.getY() < (height - 17)) {
+                        BlockPos blockpos1 = new BlockPos(blockpos.getX(), height - 17, blockpos.getZ());
+                        this.blocksToFill.add(blockpos1);
+                    }
+
                     differentCallsTemp.add(specificCall + 3);
                 }
                 differentCalls.clear();

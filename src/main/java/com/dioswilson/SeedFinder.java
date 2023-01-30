@@ -119,7 +119,7 @@ public class SeedFinder extends Thread {
 //        final ExecutorService threadExecutorService = Executors.newCachedThreadPool();
 //        System.out.println("Date initx: " + new Date().getTime());
 //        System.out.println((int)Math.ceil(Runtime.getRuntime().availableProcessors()*performace.get()));
-        System.out.println(Runtime.getRuntime().freeMemory());
+        System.out.println(Runtime.getRuntime().totalMemory());
         while (x < RADIUS && !stop) {
             if (Runtime.getRuntime().freeMemory() >= 62914560) {
                 int finalX = x;
@@ -167,10 +167,13 @@ public class SeedFinder extends Thread {
 //    }
 
     public void setRandomSeed(int x, int z) {
-        long i = x * 341873128712L + z * 132897987541L + this.seed + this.KONST;
-        OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, this.seed);
-        Witch witch = new Witch(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers);
-        witch.initialize();
+        if (!stop) {
+            long i = x * 341873128712L + z * 132897987541L + this.seed + this.KONST;
+            OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, this.seed);
+            Witch witch = new Witch(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers);
+            witch.initialize();
+        }
+
     }
 
     public void setRandomSeedWithAdvancer(int x, int z, int advancers) {
