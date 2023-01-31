@@ -408,9 +408,9 @@ public class InputValuesPanel extends JPanel {
     }
 
     public List<Chunk> getWitchChunks() {
-        if (this.witchChunks.isEmpty()) {
+//        if (this.witchChunks.isEmpty()) {
             retireveWithChunks();
-        }
+//        }
         return witchChunks;
     }
 }
