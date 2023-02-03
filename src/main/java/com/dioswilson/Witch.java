@@ -9,7 +9,6 @@ import com.seedfinding.mcbiome.source.OverworldBiomeSource;
 import javax.swing.*;
 import java.io.File;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class Witch {
@@ -45,7 +44,7 @@ public class Witch {
     private int maxAdvancers;
     private Set<Chunk> eligibleChunksForSpawning = new HashSet<>();
 
-    private int succesfulSpawns;
+    private double succesfulSpawns;
 
     public Witch(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxAdvancers) {
 
@@ -79,7 +78,7 @@ public class Witch {
         String iter = Arrays.toString(this.finalHeightMap);
         String advancers = "" + this.advancers;
         String tp = " /tp " + fromX + " 150 " + fromZ + "\n";
-        String quality = "S:" + this.succesfulSpawns;
+        String quality = "S:" + String.format("%.3f",this.succesfulSpawns);
 
         try {
             this.semaphore.acquire();
@@ -156,7 +155,7 @@ public class Witch {
 
                     for (int height : heightMap) {
 
-                        int quality = 0;
+                        double quality = 0;
                         int validSpawns = 0;
                         for (int specificCall : differentCalls) {
 
@@ -171,10 +170,10 @@ public class Witch {
 
                                 int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, height, specificCall + moreCalls + extraCalls, differentCallsTemp, positionsTemp);
 //                                if (spawns >= (54 / (i * 2 + 1))) {//max 64
-                                if (spawns >= (246 / (1.5*i  + 1))) {//max 256
+                                if (spawns >= (246 / (1.5 * i + 1))) {//max 256
                                     validSpawns++;
                                 }
-                                quality += spawns / (callsAmount*(i+1));
+                                quality += (double) spawns / (callsAmount);
 
                             }
                             else {
@@ -183,7 +182,7 @@ public class Witch {
                             }
                         }
 
-                        if (validSpawns >= callsAmount * 0.75 / ( i + 1)) {
+                        if (validSpawns >= callsAmount * 0.75 / (i + 1)) {
                             this.finalHeightMap[i] = height;
                             validChunks++;
                             this.succesfulSpawns += quality;// This number might not be not super representative

@@ -301,19 +301,19 @@ public class InputValuesPanel extends JPanel {
         });
 
         low.addActionListener(e -> {
-            performace.set(0.25);
-        });
-
-        mid.addActionListener(e -> {
             performace.set(0.5);
         });
 
-        high.addActionListener(e -> {
+        mid.addActionListener(e -> {
             performace.set(1.0);
         });
-        high.setSelected(true);
+        mid.setSelected(true);
+
+        high.addActionListener(e -> {
+            performace.set(70.0);
+        });
         veryHigh.addActionListener(e -> {
-            performace.set(2.0);
+            performace.set(140.0);
         });
 
 

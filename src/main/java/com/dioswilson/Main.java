@@ -4,15 +4,10 @@ import com.dioswilson.gui.GenerateLitematicPanel;
 import com.dioswilson.gui.InputValuesPanel;
 import com.dioswilson.gui.ResultsPanel;
 import com.dioswilson.minecraft.Chunk;
-import com.seedfinding.mcbiome.source.OverworldBiomeSource;
-import com.seedfinding.mccore.version.MCVersion;
 
-import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.swing.*;
@@ -69,20 +64,6 @@ public class Main {
         frame.add(tabbedPane);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-    }
-
-
-
-
-    public void printSeed() {
-        try {
-            Field field = Random.class.getDeclaredField("seed");
-            field.setAccessible(true);
-            AtomicLong scrambledSeed = (AtomicLong) field.get(this.randy);
-            long theSeed = scrambledSeed.get();
-            System.out.println(theSeed);
-        } catch (Exception exception) {
-        }
     }
 
 

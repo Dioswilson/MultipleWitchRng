@@ -1,7 +1,5 @@
 package com.dioswilson.minecraft;
 
-import java.util.Collection;
-
 public class Chunk {
 	
 	private int x;
@@ -29,14 +27,14 @@ public class Chunk {
 	}
 
 	public boolean equals(Object object) {
-		
+
 		Chunk blockPos = (Chunk) object;
-		
+
 		if(this.x != blockPos.getX()) return false;
 		if(this.z != blockPos.getZ()) return false;
-		
+
 		return true;
-		
+
     }
 	public int hashCode()
 	{

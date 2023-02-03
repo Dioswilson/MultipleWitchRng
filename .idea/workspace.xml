@@ -4,13 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Changed some things regarding rng calls. Changed a bit litematica generation. Still need to figure out quality">
+    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Changed CPU usage selector, optimized dependencies and changed quality.&#10;Release 1">
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Readme.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/InputValuesPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/InputValuesPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/minecraft/BlockPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/minecraft/BlockPos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/minecraft/Chunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/minecraft/Chunk.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,8 +82,9 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "TODO_SCOPE": "All Places",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/Users/Usuario/Desktop/Agus/Code stuff/Tests",
+    "last_opened_file_path": "D:/Users/Usuario/Desktop/Agus/Code stuff/WitchServerTest",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -90,7 +93,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "project.propGUI",
+    "settings.editor.selected.configurable": "preferences.sourceCode.Java",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -103,7 +106,7 @@
       <recent name="D:\Users\Usuario\Desktop\Agus\Code stuff\WitchRng\src\main\java\com\dioswilson" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.WitchRng [jar]">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="com.dioswilson.Main" />
       <module name="WitchRng.main" />
@@ -145,8 +148,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.WitchRng [jar]" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="Gradle.WitchRng [jar]" />
       </list>
     </recent_temporary>
   </component>
@@ -207,7 +210,8 @@
       <workItem from="1675211232173" duration="4000" />
       <workItem from="1675257061856" duration="4441000" />
       <workItem from="1675287222151" duration="8782000" />
-      <workItem from="1675348264452" duration="15427000" />
+      <workItem from="1675348264452" duration="15597000" />
+      <workItem from="1675429754924" duration="8927000" />
     </task>
     <task id="LOCAL-00001" summary="First commit, a lot left to do">
       <created>1674346010716</created>
@@ -258,7 +262,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675125939223</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Changed some sets into ArrayList, remade multithreading, not as intensive but it works and doesn't consume infinite RAM. Also remade quality">
+      <created>1675384326880</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1675384326880</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -296,7 +307,9 @@
     <MESSAGE value="Added panel for manual litematica generation.More things done, right now testing with performance thing." />
     <MESSAGE value="Changed more stuff, need to figure out Quality" />
     <MESSAGE value="Changed some things regarding rng calls. Changed a bit litematica generation. Still need to figure out quality" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed some things regarding rng calls. Changed a bit litematica generation. Still need to figure out quality" />
+    <MESSAGE value="Changed some sets into ArrayList, remade multithreading, not as intensive but it works and doesn't consume infinite RAM. Also remade quality" />
+    <MESSAGE value="Changed CPU usage selector, optimized dependencies and changed quality.&#10;Release 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed CPU usage selector, optimized dependencies and changed quality.&#10;Release 1" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
