@@ -156,7 +156,7 @@ public class LitematicStructureBuilder implements IStructureBuilder {
             }
         }
         metadata.putLong("TotalBlocks", totalBlocks);
-        metadata.putString("Author", "RaysWorks"); // lol
+        metadata.putString("Author", "Dioswilson"); // Originally Rays
         metadata.putLong("TotalVolume", (long) (maxX - minX + 1) * (maxY - minY + 1) * (maxZ - minZ + 1));
         metadata.putString("Name", "MultipleWitchHutFinder");
         rootTag.put("Metadata", metadata);

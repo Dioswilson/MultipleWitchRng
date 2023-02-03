@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Changed more stuff, need to figure out Quality">
+    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Changed some things regarding rng calls. Changed a bit litematica generation. Still need to figure out quality">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/InputValuesPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/InputValuesPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/minecraft/BlockPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/minecraft/BlockPos.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +81,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/Users/Usuario/Desktop/Agus/Code stuff/WitchServerTest",
+    "last_opened_file_path": "D:/Users/Usuario/Desktop/Agus/Code stuff/Tests",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -100,7 +103,7 @@
       <recent name="D:\Users\Usuario\Desktop\Agus\Code stuff\WitchRng\src\main\java\com\dioswilson" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Gradle.WitchRng [jar]">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="com.dioswilson.Main" />
       <module name="WitchRng.main" />
@@ -142,8 +145,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
         <item itemvalue="Gradle.WitchRng [jar]" />
+        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
@@ -199,7 +202,12 @@
       <workItem from="1674933126216" duration="42403000" />
       <workItem from="1675030731102" duration="7103000" />
       <workItem from="1675039179094" duration="493000" />
-      <workItem from="1675112578876" duration="12926000" />
+      <workItem from="1675112578876" duration="13102000" />
+      <workItem from="1675201994607" duration="8789000" />
+      <workItem from="1675211232173" duration="4000" />
+      <workItem from="1675257061856" duration="4441000" />
+      <workItem from="1675287222151" duration="8782000" />
+      <workItem from="1675348264452" duration="15427000" />
     </task>
     <task id="LOCAL-00001" summary="First commit, a lot left to do">
       <created>1674346010716</created>
@@ -243,7 +251,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675039672425</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Changed some things regarding rng calls. Changed a bit litematica generation. Still need to figure out quality">
+      <created>1675125939223</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1675125939223</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -280,18 +295,8 @@
     <MESSAGE value="ResultsPanel has access to InputValuesPanel now, and it creates a new SeedFinder with other constructor.&#10;Neighbour chunks are calculated on chunk finder.&#10;Tidied up things in Witch.java preparing for litematica generation." />
     <MESSAGE value="Added panel for manual litematica generation.More things done, right now testing with performance thing." />
     <MESSAGE value="Changed more stuff, need to figure out Quality" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed more stuff, need to figure out Quality" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java</url>
-          <line>154</line>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Changed some things regarding rng calls. Changed a bit litematica generation. Still need to figure out quality" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed some things regarding rng calls. Changed a bit litematica generation. Still need to figure out quality" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

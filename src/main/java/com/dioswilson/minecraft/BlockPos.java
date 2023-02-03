@@ -1,5 +1,7 @@
 package com.dioswilson.minecraft;
 
+import java.util.Objects;
+
 public class BlockPos {
 	
 	private int x;
@@ -47,7 +49,12 @@ public class BlockPos {
 		return true;
 		
     }
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y, z);
+	}
+
 	public String toString() {
 		return "BlockPos[x:" + this.getX() + ", y:" + this.getY() + ", z:" + this.getZ() + "]";
 	}

@@ -297,23 +297,23 @@ public class InputValuesPanel extends JPanel {
 
 
         veryLow.addActionListener(e -> {
-            performace.set(0.25);
+            performace.set(0.075);
         });
 
         low.addActionListener(e -> {
+            performace.set(0.25);
+        });
+
+        mid.addActionListener(e -> {
+            performace.set(0.5);
+        });
+
+        high.addActionListener(e -> {
             performace.set(1.0);
         });
-
-        mid.addActionListener(e -> {
+        high.setSelected(true);
+        veryHigh.addActionListener(e -> {
             performace.set(2.0);
-        });
-
-        mid.addActionListener(e -> {
-            performace.set(20.0);
-        });
-
-        mid.addActionListener(e -> {
-            performace.set(140.0);
         });
 
 
@@ -326,34 +326,34 @@ public class InputValuesPanel extends JPanel {
 
 
         JPanel veryLowPanel = new JPanel();
-        veryLowPanel.setLayout(new BoxLayout(veryLowPanel,BoxLayout.X_AXIS));
+        veryLowPanel.setLayout(new BoxLayout(veryLowPanel, BoxLayout.X_AXIS));
 
         veryLowPanel.add(veryLow);
         veryLowPanel.add(new JLabel("Very Low"));
 
         JPanel lowPanel = new JPanel();
-        lowPanel.setLayout(new BoxLayout(lowPanel,BoxLayout.X_AXIS));
+        lowPanel.setLayout(new BoxLayout(lowPanel, BoxLayout.X_AXIS));
 
         lowPanel.add(low);
         lowPanel.add(new JLabel("Low"));
 
 
         JPanel midPanel = new JPanel();
-        midPanel.setLayout(new BoxLayout(midPanel,BoxLayout.X_AXIS));
+        midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.X_AXIS));
 
         midPanel.add(mid);
         midPanel.add(new JLabel("Mid"));
 
 
         JPanel highPanel = new JPanel();
-        highPanel.setLayout(new BoxLayout(highPanel,BoxLayout.X_AXIS));
+        highPanel.setLayout(new BoxLayout(highPanel, BoxLayout.X_AXIS));
 
         highPanel.add(high);
         highPanel.add(new JLabel("High"));
 
 
         JPanel veryHighPanel = new JPanel();
-        veryHighPanel.setLayout(new BoxLayout(veryHighPanel,BoxLayout.X_AXIS));
+        veryHighPanel.setLayout(new BoxLayout(veryHighPanel, BoxLayout.X_AXIS));
 
         veryHighPanel.add(veryHigh);
         veryHighPanel.add(new JLabel("Very High"));
@@ -373,8 +373,8 @@ public class InputValuesPanel extends JPanel {
         add(performancePanel, BorderLayout.WEST);
 
         JPanel dummyPanel = new JPanel();
-        dummyPanel.setBorder(BorderFactory.createEmptyBorder(0,75,0,0));
-        add(dummyPanel,BorderLayout.EAST);
+        dummyPanel.setBorder(BorderFactory.createEmptyBorder(0, 75, 0, 0));
+        add(dummyPanel, BorderLayout.EAST);
         this.setVisible(true);
     }
 
@@ -409,7 +409,7 @@ public class InputValuesPanel extends JPanel {
 
     public List<Chunk> getWitchChunks() {
 //        if (this.witchChunks.isEmpty()) {
-            retireveWithChunks();
+        retireveWithChunks();
 //        }
         return witchChunks;
     }

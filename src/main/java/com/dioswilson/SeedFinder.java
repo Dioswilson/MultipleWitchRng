@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SeedFinder extends Thread {
@@ -58,6 +60,7 @@ public class SeedFinder extends Thread {
         this.maxAdvancers = maxAdvancers;
 
     }
+
     public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed, AtomicReference<Double> performace) {
 
         this(playerX, playerZ, maxAdvancers, witchChunks, seed);
@@ -72,7 +75,6 @@ public class SeedFinder extends Thread {
     }
 
 
-
     public void run() {
         try {
             getChunksForSpawning();
@@ -82,7 +84,7 @@ public class SeedFinder extends Thread {
             else {
                 setRandomSeedWithAdvancer(this.witchX / 1280, this.witchZ / 1280, this.maxAdvancers);
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
         this.running = false;
@@ -102,7 +104,7 @@ public class SeedFinder extends Thread {
     }
 
 
-    public void seedLoop() throws InterruptedException {
+    public void seedLoop() throws InterruptedException, ExecutionException {
         int x = 0;//370
         int z = 0;//-369
         int di = 1;//0
@@ -115,23 +117,39 @@ public class SeedFinder extends Thread {
 //        this.witchChunks.add(new Chunk(32, 22));
 //        this.witchChunks.add(new Chunk(32, 33));
 
-        final ExecutorService threadExecutorService = Executors.newFixedThreadPool(7);
+
+        final int threadCount = (int) Math.ceil(Runtime.getRuntime().availableProcessors()*performace.get());
+//        final int threadCount = 7;
+
+        final ExecutorService threadExecutorService = Executors.newFixedThreadPool(threadCount);
 //        final ExecutorService threadExecutorService = Executors.newCachedThreadPool();
 //        System.out.println("Date initx: " + new Date().getTime());
 //        System.out.println((int)Math.ceil(Runtime.getRuntime().availableProcessors()*performace.get()));
-        System.out.println(Runtime.getRuntime().totalMemory());
+//        System.out.println(Runtime.getRuntime().totalMemory());
+        Future[] futures = new Future[threadCount];
+        int i = 0;
         while (x < RADIUS && !stop) {
+
+            int finalX = x;
+            int finalZ = z;
             if (Runtime.getRuntime().freeMemory() >= 62914560) {
-                int finalX = x;
-                int finalZ = z;
-                threadExecutorService.submit(() -> {
+                futures[i++] = threadExecutorService.submit(() -> {
                     setRandomSeed(finalX, finalZ);
 //                    System.out.println("thread:"+Thread.currentThread()+ "Ended");
                     return null;
                 });
+//                int finalX = x;
+//                int finalZ = z;
+//                threadExecutorService.submit(() -> {
+//                    setRandomSeed(finalX, finalZ);
+//                    System.out.println("thread:"+Thread.currentThread()+ "Ended");
+//                    return null;
+//                });
 //                setRandomSeed(x, z);
 //                System.out.println("X: "+x+" Z: "+z);
 //                Thread.sleep(10);
+
+
                 x += di;
                 z += dj;
                 segmentPassed++;
@@ -143,6 +161,12 @@ public class SeedFinder extends Thread {
                     if (dj == 0) {
                         segmentLength++;
                     }
+                }
+                if (i >= threadCount) {
+                    for (int j = 0; j < threadCount; j++) {
+                        futures[j].get();
+                    }
+                    i = 0;
                 }
             }
             else {
