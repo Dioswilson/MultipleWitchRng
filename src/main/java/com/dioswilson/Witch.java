@@ -78,7 +78,7 @@ public class Witch {
         String iter = Arrays.toString(this.finalHeightMap);
         String advancers = "" + this.advancers;
         String tp = " /tp " + fromX + " 150 " + fromZ + "\n";
-        String quality = "S:" + String.format("%.3f",this.succesfulSpawns);
+        String quality = "S:" + String.format("%.3f", this.succesfulSpawns);
 
         try {
             this.semaphore.acquire();
@@ -138,7 +138,6 @@ public class Witch {
         List<Integer> differentCallsTemp = new ArrayList<>();
 
         differentCalls.add(calls);
-
         int i = 0;
         //Falta tener en cuenta los chunks que no sirven
         int extraCalls = 0;
@@ -170,7 +169,7 @@ public class Witch {
 
                                 int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, height, specificCall + moreCalls + extraCalls, differentCallsTemp, positionsTemp);
 //                                if (spawns >= (54 / (i * 2 + 1))) {//max 64
-                                if (spawns >= (246 / (1.5 * i + 1))) {//max 256
+                                if (spawns >= (246 / (1.5 * i + 1))) {//max 255
                                     validSpawns++;
                                 }
                                 quality += (double) spawns / (callsAmount);
@@ -182,7 +181,7 @@ public class Witch {
                             }
                         }
 
-                        if (validSpawns >= callsAmount * 0.75 / (i + 1)) {
+                        if (validSpawns >= callsAmount * 0.75 / (2*i + 1)) {
                             this.finalHeightMap[i] = height;
                             validChunks++;
                             this.succesfulSpawns += quality;// This number might not be not super representative
@@ -227,15 +226,15 @@ public class Witch {
         int spawns = 0;
         for (int packSize1 : mobsPerPack) {
             int mobsSpawned = 0;
-            HashMap<String, Integer> strike1 = performSpawning(packSize1/*, new Random(seed)*/, prevCalls, staticX, staticY, staticZ, chunk, mobsSpawned, height, positionsTemp);
+            HashMap<String, Integer> strike1 = performSpawning(packSize1/*, new Random(seed)*/, prevCalls, staticX, staticY, staticZ, chunk, mobsSpawned, positionsTemp);
             mobsSpawned = strike1.get("mobs");
             if (mobsSpawned < 4) {
                 for (int packSize2 : mobsPerPack) {
-                    HashMap<String, Integer> strike2 = performSpawning(packSize2/*, new Random(seed)*/, strike1.get("calls"), staticX, staticY, staticZ, chunk, strike1.get("mobs"), height, positionsTemp);
+                    HashMap<String, Integer> strike2 = performSpawning(packSize2/*, new Random(seed)*/, strike1.get("calls"), staticX, staticY, staticZ, chunk, strike1.get("mobs"), positionsTemp);
                     mobsSpawned = strike2.get("mobs");
                     if (mobsSpawned < 4) {
                         for (int packSize3 : mobsPerPack) {
-                            HashMap<String, Integer> strike3 = performSpawning(packSize3/*, new Random(seed)*/, strike2.get("calls"), staticX, staticY, staticZ, chunk, strike2.get("mobs"), height, positionsTemp);
+                            HashMap<String, Integer> strike3 = performSpawning(packSize3/*, new Random(seed)*/, strike2.get("calls"), staticX, staticY, staticZ, chunk, strike2.get("mobs"), positionsTemp);
 //                            mobsSpawned = (int) strike3.get("mobs");
                             spawns += strike3.get("mobs");
                             differentCallsTemp.add(strike3.get("calls"));
@@ -245,13 +244,17 @@ public class Witch {
                         }
                     }
                     else {
-                        differentCallsTemp.add(strike2.get("calls"));
+                        for (int i = 0; i < 4; i++) {
+                            differentCallsTemp.add(strike2.get("calls"));
+                        }
                         spawns += 16;
                     }
                 }
             }
             else {
-                differentCallsTemp.add(strike1.get("calls"));
+                for (int i = 0; i < 16; i++) {
+                    differentCallsTemp.add(strike1.get("calls"));
+                }
                 spawns += 64;
             }
 
@@ -259,7 +262,7 @@ public class Witch {
         return spawns;
     }
 
-    public HashMap<String, Integer> performSpawning(int value/*, Random rand*/, int calls, int staticX, int staticY, int staticZ, Chunk chunk, int spawnedMobs, int height, Set<BlockPos> positionsTemp) {
+    public HashMap<String, Integer> performSpawning(int value/*, Random rand*/, int calls, int staticX, int staticY, int staticZ, Chunk chunk, int spawnedMobs, Set<BlockPos> positionsTemp) {
         Random rand = new Random(seed);
 
         int x = staticX;
@@ -345,7 +348,7 @@ public class Witch {
             }
 
         }
-        data.put("height", height);
+//        data.put("height", height);
         data.put("calls", calls + moreCalls);
         data.put("mobs", spawnedMobs);
 //        data.put("rand", rand);
@@ -398,7 +401,7 @@ public class Witch {
                         }
                     }
 
-                    if (validSpawns >= callsAmount * 0.75 / (i + 1)) {
+                    if (validSpawns >= callsAmount * 0.75 / (2*i + 1)) {
                         this.finalHeightMap[i] = height;
 //                    System.out.println("Height: "+height+" i: "+i);
                         validChunks++;

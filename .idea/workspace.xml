@@ -4,15 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Changed CPU usage selector, optimized dependencies and changed quality.&#10;Release 1">
+    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Changed CPU usage selector, optimized dependencies and changed quality.&#10;Added Readme with instructions&#10;Release 1">
       <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Readme.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/InputValuesPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/InputValuesPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/minecraft/Chunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/minecraft/Chunk.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,7 +206,14 @@
       <workItem from="1675257061856" duration="4441000" />
       <workItem from="1675287222151" duration="8782000" />
       <workItem from="1675348264452" duration="15597000" />
-      <workItem from="1675429754924" duration="8927000" />
+      <workItem from="1675429754924" duration="10185000" />
+      <workItem from="1675445826850" duration="56000" />
+      <workItem from="1675459259545" duration="5224000" />
+      <workItem from="1675528893582" duration="634000" />
+      <workItem from="1675539831292" duration="9061000" />
+      <workItem from="1675598680808" duration="9347000" />
+      <workItem from="1675628029035" duration="9179000" />
+      <workItem from="1675689555018" duration="9842000" />
     </task>
     <task id="LOCAL-00001" summary="First commit, a lot left to do">
       <created>1674346010716</created>
@@ -269,7 +271,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675384326880</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Changed CPU usage selector, optimized dependencies and changed quality.&#10;Added Readme with instructions&#10;Release 1">
+      <created>1675441257933</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1675441257933</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -309,7 +318,8 @@
     <MESSAGE value="Changed some things regarding rng calls. Changed a bit litematica generation. Still need to figure out quality" />
     <MESSAGE value="Changed some sets into ArrayList, remade multithreading, not as intensive but it works and doesn't consume infinite RAM. Also remade quality" />
     <MESSAGE value="Changed CPU usage selector, optimized dependencies and changed quality.&#10;Release 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed CPU usage selector, optimized dependencies and changed quality.&#10;Release 1" />
+    <MESSAGE value="Changed CPU usage selector, optimized dependencies and changed quality.&#10;Added Readme with instructions&#10;Release 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed CPU usage selector, optimized dependencies and changed quality.&#10;Added Readme with instructions&#10;Release 1" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
