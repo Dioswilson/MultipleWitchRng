@@ -27,7 +27,6 @@ public class InputValuesPanel extends JPanel {
     public static JButton searchButton;
     private List<Chunk> witchChunks = new ArrayList<>();
 
-    //Todo checkboxes seleccionando CPU usage
     public InputValuesPanel() throws HeadlessException {
 
         this.setLayout(new BorderLayout());

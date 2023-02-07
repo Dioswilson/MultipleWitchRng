@@ -14,7 +14,6 @@ import java.util.concurrent.Semaphore;
 public class Witch {
 
     private final int[] heightMap = {80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256, 272};
-    //	public int[] heightMap = {176, 256};
     private final int[] mobsPerPack = {1, 2, 3, 4};
     private long seed;
     //    public Chunk[] witchChunks;
@@ -22,7 +21,6 @@ public class Witch {
     private HashSet<Chunk> neighbourChunks = new HashSet<>();
 
 
-    //    public List<BlockPos> positions = new ArrayList<>();
     private Set<BlockPos> positions = new HashSet<>();
     Set<BlockPos> blocksToFill = new HashSet<>();
 
@@ -48,7 +46,6 @@ public class Witch {
 
     public Witch(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxAdvancers) {
 
-//        System.out.println("Free memory init = "+(Runtime.getRuntime().freeMemory()));
         this(seed, biomeSource, witchChunks, neighbourChunks, chunksForSpawning);
         this.semaphore = semaphore;
         this.maxAdvancers = maxAdvancers;
@@ -60,7 +57,6 @@ public class Witch {
     public Witch(long seed, OverworldBiomeSource biomeSource, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning/*, int maxAdvancers*/) {
         this.seed = seed;
         this.biomeSource = biomeSource;
-//        this.maxAdvancers = maxAdvancers;
         this.eligibleChunksForSpawning.addAll(chunksForSpawning);
         this.witchChunks.addAll(witchChunks);
         this.neighbourChunks.addAll(neighbourChunks);
@@ -97,25 +93,6 @@ public class Witch {
         }
     }
 
-//    public void print() {
-//        System.out.println("Start");
-//        StringBuilder stringBuilder = new StringBuilder();
-//
-//        for (BlockPos pos : positions) {
-//            stringBuilder.append("listBlockPos.add(new BlockPos(").append(pos.getX()).append(", ").append(pos.getY()).append(", ").append(pos.getZ()).append("));\n");
-////            System.out.println("listBlockPos.add(new BlockPos(" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "));");
-//        }
-//        StringSelection stringSelection = new StringSelection(stringBuilder.toString());
-//        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-//        clipboard.setContents(stringSelection, null);
-//        System.out.println("End");
-//        printBlocksForCommand("solidBlocks",blocksToFill);
-////        System.out.println("Free memory final = "+(Runtime.getRuntime().freeMemory()));
-//
-//
-//        this.positions.clear();
-//    }
-
     public void initialize() {
 
         for (int i = 0; i <= this.maxAdvancers; i++) {
@@ -123,27 +100,25 @@ public class Witch {
             Arrays.fill(this.finalHeightMap, 0);
             this.positions.clear();
             this.blocksToFill.clear();
-//            calculateRandomChunkPositions(witchChunks.size(), 4 + i);
             calculateRandomChunkPositionsFull(4 + i);
         }
-//        System.gc();
 
     }
 
     private void calculateRandomChunkPositionsFull(int calls) {
         int validChunks = 0;
-//        HashSet<Integer> differentCalls = new HashSet<>();
-//        HashSet<Integer> differentCallsTemp = new HashSet<>();
-        List<Integer> differentCalls = new ArrayList<>();
-        List<Integer> differentCallsTemp = new ArrayList<>();
+        HashMap<Integer, Integer> differentCalls = new HashMap<>();
+        HashMap<Integer, Integer> differentCallsTemp = new HashMap<>();
 
-        differentCalls.add(calls);
+//        differentCalls.add(calls);
+        differentCalls.put(calls, 1);
         int i = 0;
-        //Falta tener en cuenta los chunks que no sirven
         int extraCalls = 0;
 
         this.succesfulSpawns = 0;
+
         Set<BlockPos> positionsTemp = new HashSet<>();
+
         for (Chunk chunk : this.eligibleChunksForSpawning) {
 
             int callsAmount = differentCalls.size();//If ==0 then can optimize skipping, it means previous chunk was useless
@@ -151,12 +126,14 @@ public class Witch {
             if (callsAmount > 0) {
 
                 if (this.witchChunks.contains(chunk)) {
+                    int completeCallsAmount = differentCalls.values().stream().mapToInt(Integer::intValue).sum();
 
                     for (int height : heightMap) {
 
                         double quality = 0;
                         int validSpawns = 0;
-                        for (int specificCall : differentCalls) {
+                        for (int specificCall : differentCalls.keySet()) {
+                            int specificCallAmount = differentCalls.get(specificCall);
 
                             BlockPos blockpos = getRandomChunkPosition(specificCall + extraCalls, chunk.getX(), chunk.getZ(), height);
                             int moreCalls = 3;
@@ -167,21 +144,27 @@ public class Witch {
                                 int staticX = blockpos.getX();
                                 int staticZ = blockpos.getZ();
 
-                                int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, height, specificCall + moreCalls + extraCalls, differentCallsTemp, positionsTemp);
+                                int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, specificCall + moreCalls + extraCalls, differentCallsTemp, positionsTemp, specificCallAmount);
 //                                if (spawns >= (54 / (i * 2 + 1))) {//max 64
                                 if (spawns >= (246 / (1.5 * i + 1))) {//max 255
-                                    validSpawns++;
+                                    validSpawns += specificCallAmount;
                                 }
-                                quality += (double) spawns / (callsAmount);
+                                quality += (double) (spawns * specificCallAmount) / completeCallsAmount;
 
                             }
                             else {
-                                differentCallsTemp.add(specificCall + moreCalls);
+                                int currCalls = specificCall + moreCalls;
+                                if (differentCallsTemp.containsKey(currCalls)) {
+                                    differentCallsTemp.merge(currCalls, specificCallAmount, Integer::sum);
+                                }
+                                else {
+                                    differentCallsTemp.put(currCalls, specificCallAmount);
+                                }
 //                                this.blocksToFill.add(blockpos);
                             }
                         }
 
-                        if (validSpawns >= callsAmount * 0.75 / (2*i + 1)) {
+                        if (validSpawns >= completeCallsAmount * 0.75 / (2 * i + 1)) {
                             this.finalHeightMap[i] = height;
                             validChunks++;
                             this.succesfulSpawns += quality;// This number might not be not super representative
@@ -193,7 +176,7 @@ public class Witch {
                     this.positions.addAll(positionsTemp);
                     positionsTemp.clear();
                     differentCalls.clear();
-                    differentCalls.addAll(differentCallsTemp);
+                    differentCalls.putAll(differentCallsTemp);
                     differentCallsTemp.clear();
                     extraCalls = 0;
                     i++;
@@ -222,8 +205,10 @@ public class Witch {
 
     }
 
-    public int simulatePackSpawns(int staticX, int staticY, int staticZ, Chunk chunk, int height, int prevCalls, List<Integer> differentCallsTemp, Set<BlockPos> positionsTemp) {
+    public int simulatePackSpawns(int staticX, int staticY, int staticZ, Chunk chunk, int prevCalls, HashMap<Integer, Integer> calls, Set<BlockPos> positionsTemp, int repetition) {
         int spawns = 0;
+        int currCalls;
+
         for (int packSize1 : mobsPerPack) {
             int mobsSpawned = 0;
             HashMap<String, Integer> strike1 = performSpawning(packSize1/*, new Random(seed)*/, prevCalls, staticX, staticY, staticZ, chunk, mobsSpawned, positionsTemp);
@@ -235,25 +220,36 @@ public class Witch {
                     if (mobsSpawned < 4) {
                         for (int packSize3 : mobsPerPack) {
                             HashMap<String, Integer> strike3 = performSpawning(packSize3/*, new Random(seed)*/, strike2.get("calls"), staticX, staticY, staticZ, chunk, strike2.get("mobs"), positionsTemp);
-//                            mobsSpawned = (int) strike3.get("mobs");
                             spawns += strike3.get("mobs");
-                            differentCallsTemp.add(strike3.get("calls"));
-//                            if (mobsSpawned >= 3) {//Perfect is 4
-//                            spawns++;
-//                            }
+                            currCalls = strike3.get("calls");
+                            if (calls.containsKey(currCalls)) {
+                                calls.merge(currCalls, repetition, Integer::sum);
+                            }
+                            else {
+                                calls.put(currCalls, repetition);
+                            }
                         }
                     }
                     else {
-                        for (int i = 0; i < 4; i++) {
-                            differentCallsTemp.add(strike2.get("calls"));
+                        currCalls = strike2.get("calls");
+                        if (calls.containsKey(currCalls)) {
+                            calls.merge(currCalls, 4 * repetition, Integer::sum);
                         }
+                        else {
+                            calls.put(currCalls, 4 * repetition);
+                        }
+
                         spawns += 16;
                     }
                 }
             }
             else {
-                for (int i = 0; i < 16; i++) {
-                    differentCallsTemp.add(strike1.get("calls"));
+                currCalls = strike1.get("calls");
+                if (calls.containsKey(currCalls)) {
+                    calls.merge(currCalls, 16 * repetition, Integer::sum);
+                }
+                else {
+                    calls.put(currCalls, 16 * repetition);
                 }
                 spawns += 64;
             }
@@ -335,20 +331,11 @@ public class Witch {
                 positionsTemp.add(new BlockPos(x, staticY, z));
             }
 
-//            if (canSpawn) {
-//                rand.nextInt();//nextFloat() on code
-//                moreCalls++;
-//                spawnedMobs++;
-//                positions.add(new BlockPos(x, staticY, z));
-//
-//            }
-
             if (spawnedMobs == 4) {
                 break;
             }
 
         }
-//        data.put("height", height);
         data.put("calls", calls + moreCalls);
         data.put("mobs", spawnedMobs);
 //        data.put("rand", rand);
@@ -361,109 +348,118 @@ public class Witch {
 
     public void getBlocksPositions(int calls, int playerX, int playerZ) {
         int validChunks = 0;
-//        HashSet<Integer> differentCalls = new HashSet<>();
-//        HashSet<Integer> differentCallsTemp = new HashSet<>();
-        List<Integer> differentCalls = new ArrayList<>();
-        List<Integer> differentCallsTemp = new ArrayList<>();
-        differentCalls.add(calls);
+        HashMap<Integer, Integer> differentCalls = new HashMap<>();
+        HashMap<Integer, Integer> differentCallsTemp = new HashMap<>();
+
+        differentCalls.put(calls, 1);
+
         Set<BlockPos> positionsTemp = new HashSet<>();
+
         int i = 0;
         for (Chunk chunk : this.eligibleChunksForSpawning) {
+
             int callsAmount = differentCalls.size();//If ==0 then can optimize skipping, it means previous chunk was useless
 
-            if (this.witchChunks.contains(chunk)) {
+            if (callsAmount > 0) {
+                if (this.witchChunks.contains(chunk)) {
+                    int completeCallsAmount = differentCalls.values().stream().mapToInt(Integer::intValue).sum();
 
-                for (int height : heightMap) {
+                    for (int height : heightMap) {
 
-                    int validSpawns = 0;
+                        int validSpawns = 0;
 
-                    for (int specificCall : differentCalls) {
+                        for (int specificCall : differentCalls.keySet()) {
+                            int specificCallAmount = differentCalls.get(specificCall);
 
-                        BlockPos blockpos = getRandomChunkPosition(specificCall /*+ extraCalls*/, chunk.getX(), chunk.getZ(), height);
-                        int moreCalls = 3;
-                        int staticY = blockpos.getY();
+                            BlockPos blockpos = getRandomChunkPosition(specificCall /*+ extraCalls*/, chunk.getX(), chunk.getZ(), height);
+                            int moreCalls = 3;
+                            int staticY = blockpos.getY();
 
-                        if (staticY >= witchHutMinHeight && staticY <= witchHutMaxHeight) {
+                            if (staticY >= witchHutMinHeight && staticY <= witchHutMaxHeight) {
 
-                            int staticX = blockpos.getX();
-                            int staticZ = blockpos.getZ();
+                                int staticX = blockpos.getX();
+                                int staticZ = blockpos.getZ();
 
-                            int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, height, specificCall + moreCalls /*+ extraCalls*/, differentCallsTemp, positionsTemp);
-//
-//                            if (spawns >= (54 / (i * 2 + 1))) {//max 64
-                            if (spawns >= (250 / (i * 1.5 + 1))) {//max 256
-                                validSpawns++;
+                                int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, specificCall + moreCalls /*+ extraCalls*/, differentCallsTemp, positionsTemp, specificCallAmount);
+
+                                if (spawns >= (246 / (i * 1.5 + 1))) {//max 256
+                                    validSpawns += specificCallAmount;
+                                }
+                            }
+                            else {
+                                int currCalls = specificCall + moreCalls;
+                                if (differentCallsTemp.containsKey(currCalls)) {
+                                    differentCallsTemp.merge(currCalls, specificCallAmount, Integer::sum);
+                                }
+                                else {
+                                    differentCallsTemp.put(currCalls, specificCallAmount);
+                                }
+                                this.blocksToFill.add(blockpos);//Could only add them if they are on the correct Heightmap
                             }
                         }
-                        else {
-                            differentCallsTemp.add(specificCall + moreCalls);
-                            this.blocksToFill.add(blockpos);
+
+                        if (validSpawns >= completeCallsAmount * 0.75 / (2 * i + 1)) {
+                            this.finalHeightMap[i] = height;
+                            validChunks++;
+                            break;//TODO: It only uses the first height it finds for a chunk
+                        }
+                        differentCallsTemp.clear();
+                        positionsTemp.clear();
+                    }
+                    this.positions.addAll(positionsTemp);
+                    positionsTemp.clear();
+                    differentCalls.clear();
+                    differentCalls.putAll(differentCallsTemp);
+                    differentCallsTemp.clear();
+                    i++;
+                    if (i == this.witchChunks.size()) {
+                        break;
+                    }
+                }
+                else {
+                    int height;
+                    if (!this.neighbourChunks.contains(chunk)) {
+                        height = 16;
+                    }
+                    else {
+                        height = 80;
+                    }
+                    boolean gettingHeight = true;
+                    while (gettingHeight) {
+                        boolean repeat = false;
+                        for (int specificCall : differentCalls.keySet()) {
+
+                            BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
+                            int yValue = blockpos.getY();
+                            if ((yValue == (height - 1))) {
+                                height += 16;
+                                repeat = true;
+                                break;
+                            }
+
+                        }
+                        if (!repeat) {
+                            gettingHeight = false;
                         }
                     }
 
-                    if (validSpawns >= callsAmount * 0.75 / (2*i + 1)) {
-                        this.finalHeightMap[i] = height;
-//                    System.out.println("Height: "+height+" i: "+i);
-                        validChunks++;
-                        break;//TODO: It only uses the first height it finds for a chunk
+                    for (int specificCall : differentCalls.keySet()) {
+                        BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
+                        this.blocksToFill.add(blockpos);
+                        if (blockpos.getY() < (height - 17)) {
+                            BlockPos blockpos1 = new BlockPos(blockpos.getX(), height - 17, blockpos.getZ());
+                            this.blocksToFill.add(blockpos1);
+                        }
+                        differentCallsTemp.put(specificCall + 3, differentCalls.get(specificCall));
                     }
+                    differentCalls.clear();
+                    differentCalls.putAll(differentCallsTemp);
                     differentCallsTemp.clear();
-                    positionsTemp.clear();
-                }
-                this.positions.addAll(positionsTemp);
-                positionsTemp.clear();
-                differentCalls.clear();
-                differentCalls.addAll(differentCallsTemp);
-                differentCallsTemp.clear();
-//                extraCalls = 0;
-                i++;
-                if (i == this.witchChunks.size()) {
-                    break;
                 }
             }
             else {
-                int height;
-                if (!this.neighbourChunks.contains(chunk)) {
-                    height = 16;
-                }
-                else {
-                    height = 80;
-                }
-                boolean gettingHeight = true;
-                Set<Integer> differentCallsSet = new HashSet<>(differentCalls);
-                while (gettingHeight) {
-                    boolean repeat = false;
-                    for (int specificCall : differentCallsSet) {
-
-                        BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
-                        int yValue = blockpos.getY();
-                        if ((yValue == (height - 1))) {
-                            height += 16;
-                            repeat = true;
-                            break;
-                        }
-
-                    }
-                    if (!repeat) {
-                        gettingHeight = false;
-                    }
-                }
-
-                for (int specificCall : differentCallsSet) {
-                    BlockPos blockpos = getRandomChunkPosition(specificCall, chunk.getX(), chunk.getZ(), height);
-                    this.blocksToFill.add(blockpos);
-                    if (blockpos.getY() < (height - 17)) {
-                        BlockPos blockpos1 = new BlockPos(blockpos.getX(), height - 17, blockpos.getZ());
-                        this.blocksToFill.add(blockpos1);
-                    }
-                }
-                ListIterator<Integer> callsListIterator = differentCalls.listIterator();
-                while (callsListIterator.hasNext()) {
-                    callsListIterator.set(callsListIterator.next() + 3);
-                }
-
+                break;
             }
-
         }
         if (validChunks >= this.witchChunks.size()) {
 
@@ -507,17 +503,6 @@ public class Witch {
     }
 
 
-    private void printBlocksForCommand(String listName, Set<BlockPos> blocksToFill) {
-
-//        System.out.println("Start");
-//        StringBuilder stringBuilder = new StringBuilder();
-
-        for (BlockPos pos : blocksToFill) {
-
-//            stringBuilder.append("listBlockPos.add(new BlockPos(").append(pos.getX()).append(", ").append(pos.getY()).append(", ").append(pos.getZ()).append("));\n");
-            System.out.println(listName + ".add(new BlockPos(" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "));");
-        }
-    }
 
 
     private void createLitematic(int playerX, int playerZ) {
