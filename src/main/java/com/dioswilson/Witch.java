@@ -78,9 +78,7 @@ public class Witch {
 
         try {
             this.semaphore.acquire();
-            String formattedResultText = String.format("%-28s %-30s %-30s %-15s %s", from, to, iter, advancers, tp);
-//            Main.textArea.append(formattedResultText);
-            System.out.println(formattedResultText);
+            System.out.println(String.format("%-28s %-30s %-30s %-15s %-15s %s", from, to, iter, advancers, quality, tp));
             System.out.println("Date: " + new Date().getTime());
             SwingUtilities.invokeLater(() -> {
                 ResultsPanel.model.addRow(new Object[]{from, to, iter, advancers, quality, "Download"});
@@ -146,7 +144,7 @@ public class Witch {
 
                                 int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, specificCall + moreCalls + extraCalls, differentCallsTemp, positionsTemp, specificCallAmount);
 //                                if (spawns >= (54 / (i * 2 + 1))) {//max 64
-                                if (spawns >= (246 / (1.5 * i + 1))) {//max 255
+                                if (spawns >= (250 / (i + 1))) {//max 255
                                     validSpawns += specificCallAmount;
                                 }
                                 quality += (double) (spawns * specificCallAmount) / completeCallsAmount;
@@ -164,7 +162,7 @@ public class Witch {
                             }
                         }
 
-                        if (validSpawns >= completeCallsAmount * 0.75 / (2 * i + 1)) {
+                        if (validSpawns >= completeCallsAmount * 0.95 / (2 * i + 1)) {//TODO: MAYBE based on quality
                             this.finalHeightMap[i] = height;
                             validChunks++;
                             this.succesfulSpawns += quality;// This number might not be not super representative
@@ -382,7 +380,7 @@ public class Witch {
 
                                 int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, specificCall + moreCalls /*+ extraCalls*/, differentCallsTemp, positionsTemp, specificCallAmount);
 
-                                if (spawns >= (246 / (i * 1.5 + 1))) {//max 256
+                                if (spawns >= (250 / (i  + 1))) {//max 256
                                     validSpawns += specificCallAmount;
                                 }
                             }
@@ -398,7 +396,7 @@ public class Witch {
                             }
                         }
 
-                        if (validSpawns >= completeCallsAmount * 0.75 / (2 * i + 1)) {
+                        if (validSpawns >= completeCallsAmount * 0.95 / (2 * i + 1)) {
                             this.finalHeightMap[i] = height;
                             validChunks++;
                             break;//TODO: It only uses the first height it finds for a chunk
@@ -501,8 +499,6 @@ public class Witch {
             return i == 0 ? number : number + interval - i;
         }
     }
-
-
 
 
     private void createLitematic(int playerX, int playerZ) {
