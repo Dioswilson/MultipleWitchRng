@@ -20,7 +20,7 @@ public class GenerateLitematicPanel extends JPanel {
         numberFormat.setGroupingUsed(false);
 
         JLabel warningLabel = new JLabel("Please fill Input values tab first");
-//        jLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        warningLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         warningLabel.setFont(new Font("Calibri", Font.PLAIN, 20));
         add(warningLabel);
 
@@ -44,6 +44,7 @@ public class GenerateLitematicPanel extends JPanel {
         fromXTextField.setValue(0L);
         fromXPanel.add(fromXTextField);
         add(fromXPanel);
+
 
 
         JPanel fromZPanel = new JPanel();

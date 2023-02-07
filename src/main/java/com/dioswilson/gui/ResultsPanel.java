@@ -34,6 +34,7 @@ public class ResultsPanel extends JPanel {
         table.getColumnModel().getColumn(4).setPreferredWidth(100);
         table.getColumnModel().getColumn(5).setPreferredWidth(175);
 
+        table.setAutoCreateRowSorter(true);
 
         table.getColumn("Litematica").setCellRenderer(new ButtonRenderer());
         table.getColumn("Litematica").setCellEditor(new ButtonEditor(new JCheckBox()));
@@ -106,7 +107,7 @@ public class ResultsPanel extends JPanel {
 
             }
             isPushed = false;
-            return new String(label);
+            return label;
         }
 
         public boolean stopCellEditing() {
