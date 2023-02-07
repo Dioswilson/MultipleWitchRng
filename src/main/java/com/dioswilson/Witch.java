@@ -78,7 +78,7 @@ public class Witch {
 
         try {
             this.semaphore.acquire();
-            System.out.println(String.format("%-28s %-30s %-30s %-15s %-15s %s", from, to, iter, advancers, quality, tp));
+            System.out.printf("%-28s %-30s %-30s %-15s %-15s %s%n", from, to, iter, advancers, quality, tp);
             System.out.println("Date: " + new Date().getTime());
             SwingUtilities.invokeLater(() -> {
                 ResultsPanel.model.addRow(new Object[]{from, to, iter, advancers, quality, "Download"});
@@ -151,7 +151,7 @@ public class Witch {
 
                             }
                             else {
-                                int currCalls = specificCall + moreCalls;
+                                int currCalls = specificCall + extraCalls + moreCalls;
                                 if (differentCallsTemp.containsKey(currCalls)) {
                                     differentCallsTemp.merge(currCalls, specificCallAmount, Integer::sum);
                                 }
@@ -380,7 +380,7 @@ public class Witch {
 
                                 int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, specificCall + moreCalls /*+ extraCalls*/, differentCallsTemp, positionsTemp, specificCallAmount);
 
-                                if (spawns >= (250 / (i  + 1))) {//max 256
+                                if (spawns >= (250 / (i + 1))) {//max 256
                                     validSpawns += specificCallAmount;
                                 }
                             }
