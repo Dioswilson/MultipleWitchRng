@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Fixed a mistake in search">
+    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Finally fixed Quality (98% sure). Also changed region name on litematica">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/Readme.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Litematica/LitematicStructureBuilder.java" afterDir="false" />
@@ -102,7 +102,7 @@
       <recent name="D:\Users\Usuario\Desktop\Agus\Code stuff\WitchRng\src\main\java\com\dioswilson" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Gradle.WitchRng [jar]">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="com.dioswilson.Main" />
       <module name="WitchRng.main" />
@@ -217,7 +217,7 @@
       <workItem from="1675689555018" duration="21199000" />
       <workItem from="1675729891329" duration="4000" />
       <workItem from="1675774966112" duration="11077000" />
-      <workItem from="1675796865534" duration="32040000" />
+      <workItem from="1675796865534" duration="32711000" />
     </task>
     <task id="LOCAL-00001" summary="First commit, a lot left to do">
       <created>1674346010716</created>
@@ -324,7 +324,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675813219537</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Finally fixed Quality (98% sure). Also changed region name on litematica">
+      <created>1675901924642</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1675901924642</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -371,7 +378,8 @@
     <MESSAGE value="Changed Readme. Made ir more exigent" />
     <MESSAGE value="Made improvements to UI" />
     <MESSAGE value="Fixed a mistake in search" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed a mistake in search" />
+    <MESSAGE value="Finally fixed Quality (98% sure). Also changed region name on litematica" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finally fixed Quality (98% sure). Also changed region name on litematica" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
