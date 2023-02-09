@@ -153,16 +153,16 @@ public class Witch {
                             else {
                                 int currCalls = specificCall + extraCalls + moreCalls;
                                 if (differentCallsTemp.containsKey(currCalls)) {
-                                    differentCallsTemp.merge(currCalls, specificCallAmount, Integer::sum);
+                                    differentCallsTemp.merge(currCalls, specificCallAmount * 64, Integer::sum);
                                 }
                                 else {
-                                    differentCallsTemp.put(currCalls, specificCallAmount);
+                                    differentCallsTemp.put(currCalls, specificCallAmount * 64);
                                 }
 //                                this.blocksToFill.add(blockpos);
                             }
                         }
 
-                        if (validSpawns >= completeCallsAmount * 0.95 / (2 * i + 1)) {//TODO: MAYBE based on quality
+                        if (validSpawns >= completeCallsAmount * 0.95 / (2 * i + 1)) {//TODO: MAYBE based on quality(Maybe not)
                             this.finalHeightMap[i] = height;
                             validChunks++;
                             this.succesfulSpawns += quality;// This number might not be not super representative
@@ -387,10 +387,10 @@ public class Witch {
                             else {
                                 int currCalls = specificCall + moreCalls;
                                 if (differentCallsTemp.containsKey(currCalls)) {
-                                    differentCallsTemp.merge(currCalls, specificCallAmount, Integer::sum);
+                                    differentCallsTemp.merge(currCalls, specificCallAmount* 64, Integer::sum);
                                 }
                                 else {
-                                    differentCallsTemp.put(currCalls, specificCallAmount);
+                                    differentCallsTemp.put(currCalls, specificCallAmount* 64);
                                 }
                                 this.blocksToFill.add(blockpos);//Could only add them if they are on the correct Heightmap
                             }

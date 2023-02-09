@@ -188,7 +188,7 @@ public class LitematicStructureBuilder implements IStructureBuilder {
         }
         region.put("BlockStatePalette", blockStatePalette);
         region.putLongArray("BlockStates", storage.getBackingLongArray());
-        regions.put("Cluster Chunks", region);
+        regions.put("Witch rng", region);
         rootTag.put("Regions", regions);
 
         try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(dest))) {
