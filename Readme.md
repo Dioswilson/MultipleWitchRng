@@ -12,6 +12,7 @@ This application lets you find mansion areas for witch rng on witch huts, allowi
 - "Generate Litematic" tab is made to input known values and compare them or just generate the litematic
 
 ### Extra information
+- Restart the server before running it. Program is using HashSize for only one player.
 - You need to avoid randomticks
 - Program does not check if all with huts are in range of the player, if they are not in range it will never find an output.
 - Not planning to implement other way of building the perimeter. Litematica is the only option. https://masa.dy.fi/mcmods/client_mods/ to download it
