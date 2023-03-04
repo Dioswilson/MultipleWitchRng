@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Version bump">
+    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Added information for Readme.md and optimized import">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/Readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +79,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "TODO_SCOPE": "All Places",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/Users/Usuario/Desktop/Agus/Code stuff/WitchServerTest",
+    "last_opened_file_path": "D:/Users/Usuario/Desktop/Agus/Code stuff/WitchRng",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -88,7 +88,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "com.maddyhome.idea.vim.ui.VimEmulationConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -217,6 +217,24 @@
       <workItem from="1675729891329" duration="4000" />
       <workItem from="1675774966112" duration="11077000" />
       <workItem from="1675796865534" duration="37547000" />
+      <workItem from="1676035693123" duration="1865000" />
+      <workItem from="1676233596969" duration="611000" />
+      <workItem from="1676499882295" duration="1956000" />
+      <workItem from="1676581088217" duration="4964000" />
+      <workItem from="1676935520131" duration="439000" />
+      <workItem from="1676935966991" duration="2683000" />
+      <workItem from="1676996675124" duration="771000" />
+      <workItem from="1677008813075" duration="3831000" />
+      <workItem from="1677037932086" duration="97000" />
+      <workItem from="1677195793393" duration="668000" />
+      <workItem from="1677197333817" duration="1013000" />
+      <workItem from="1677421814423" duration="194000" />
+      <workItem from="1677443960284" duration="15000" />
+      <workItem from="1677443986626" duration="3076000" />
+      <workItem from="1677530845286" duration="873000" />
+      <workItem from="1677619393566" duration="1553000" />
+      <workItem from="1677704256512" duration="916000" />
+      <workItem from="1677962038275" duration="411000" />
     </task>
     <task id="LOCAL-00001" summary="First commit, a lot left to do">
       <created>1674346010716</created>

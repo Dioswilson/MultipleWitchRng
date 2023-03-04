@@ -387,10 +387,10 @@ public class Witch {
                             else {
                                 int currCalls = specificCall + moreCalls;
                                 if (differentCallsTemp.containsKey(currCalls)) {
-                                    differentCallsTemp.merge(currCalls, specificCallAmount* 64, Integer::sum);
+                                    differentCallsTemp.merge(currCalls, specificCallAmount * 64, Integer::sum);
                                 }
                                 else {
-                                    differentCallsTemp.put(currCalls, specificCallAmount* 64);
+                                    differentCallsTemp.put(currCalls, specificCallAmount * 64);
                                 }
                                 this.blocksToFill.add(blockpos);//Could only add them if they are on the correct Heightmap
                             }
