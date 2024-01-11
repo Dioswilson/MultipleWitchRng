@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Deleted unused variables">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="95ca4c1d-edaf-4ac1-a889-1126e1bbdbb7" name="Changes" comment="Renamed Witch class, changed &quot;quality&quot; to spawns per tick.&#10;Starting to implement an option to set max players connected players instead of using always 1.">
       <change beforePath="$PROJECT_DIR$/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/Readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/SeedFinder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/Witch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/WitchSimulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/ResultsPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/gui/ResultsPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dioswilson/WitchSimulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dioswilson/WitchSimulator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -281,7 +277,7 @@
       <workItem from="1704652826359" duration="9553000" />
       <workItem from="1704746377749" duration="21751000" />
       <workItem from="1704938301019" duration="27000" />
-      <workItem from="1704938339096" duration="1875000" />
+      <workItem from="1704938339096" duration="2179000" />
     </task>
     <task id="LOCAL-00001" summary="First commit, a lot left to do">
       <created>1674346010716</created>
@@ -409,7 +405,15 @@
       <option name="project" value="LOCAL" />
       <updated>1677962593928</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Renamed Witch class, changed &quot;quality&quot; to spawns per tick.&#10;Starting to implement an option to set max players connected players instead of using always 1.">
+      <option name="closed" value="true" />
+      <created>1704940463313</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1704940463313</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -458,7 +462,8 @@
     <MESSAGE value="Finally fixed Quality (98% sure). Also changed region name on litematica" />
     <MESSAGE value="Version bump" />
     <MESSAGE value="Deleted unused variables" />
-    <option name="LAST_COMMIT_MESSAGE" value="Deleted unused variables" />
+    <MESSAGE value="Renamed Witch class, changed &quot;quality&quot; to spawns per tick.&#10;Starting to implement an option to set max players connected players instead of using always 1." />
+    <option name="LAST_COMMIT_MESSAGE" value="Renamed Witch class, changed &quot;quality&quot; to spawns per tick.&#10;Starting to implement an option to set max players connected players instead of using always 1." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

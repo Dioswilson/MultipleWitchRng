@@ -136,6 +136,11 @@ public class WitchSimulator {
                 if (this.witchChunks.contains(chunk)) {
                     int completeCallsAmount = differentCalls.values().stream().mapToInt(Integer::intValue).sum();
 
+                    double maxQuality = 0;
+                    int finalHeightmap = 0;
+                    HashMap<Integer, Integer> defDifferentCalls = new HashMap<>();
+                    Set<BlockPos> defPositionsTemp = new HashSet<>();
+
                     for (int height : heightMap) {
 
                         double quality = 0;
@@ -152,6 +157,7 @@ public class WitchSimulator {
                                 int staticX = blockpos.getX();
                                 int staticZ = blockpos.getZ();
 
+                                //Todo: Needs optimizng
                                 int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, specificCall + moreCalls + extraCalls, differentCallsTemp, positionsTemp, specificCallAmount);
 
                                 quality += (double) (spawns * specificCallAmount) / completeCallsAmount;
@@ -170,20 +176,29 @@ public class WitchSimulator {
                         }
 
 //                        if (validSpawns >= completeCallsAmount * 0.95 / (2 * i + 1)) {
-                        if (this.succesfulSpawns + quality >= -(25 * i * i) + 140 * i + 255 ) {
-                            this.finalHeightMap[i] = height;
-                            validChunks++;
-                            this.succesfulSpawns += quality;
-                            break;//TODO: It only uses the first height it finds for a chunk
+//                        if (this.succesfulSpawns + quality >= -(15 * i * i) + 155 * i + 255 ) {
+                        if (quality > maxQuality) {//If it is equal, might be worth checking the different outcomes
+                            maxQuality = quality;
+                            defDifferentCalls.clear();
+                            defPositionsTemp.clear();
+                            defDifferentCalls.putAll(differentCallsTemp);
+                            defPositionsTemp.addAll(positionsTemp);
+                            finalHeightmap = height;
                         }
                         differentCallsTemp.clear();
                         positionsTemp.clear();
                     }
-                    this.positions.addAll(positionsTemp);
-                    positionsTemp.clear();
-                    differentCalls.clear();
-                    differentCalls.putAll(differentCallsTemp);
-                    differentCallsTemp.clear();
+
+                    if (this.succesfulSpawns + maxQuality >= -(25 * i * i) + 145 * i + 255) {
+                        this.finalHeightMap[i] = finalHeightmap;
+                        validChunks++;
+                        this.succesfulSpawns+=maxQuality;
+                        this.positions.addAll(defPositionsTemp);
+                        positionsTemp.clear();
+                        differentCalls.clear();
+                        differentCalls.putAll(defDifferentCalls);
+                        differentCallsTemp.clear();
+                    }
                     extraCalls = 0;
                     i++;
                     if (i == this.witchChunks.size()) {
