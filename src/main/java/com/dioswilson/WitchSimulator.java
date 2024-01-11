@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-public class Witch {
+public class WitchSimulator {
 
     private final int[] heightMap = {80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256, 272};
     private final int[] mobsPerPack = {1, 2, 3, 4};
@@ -40,13 +40,13 @@ public class Witch {
     private Semaphore semaphore;
     private int advancers;
     private int maxAdvancers;
-    private Set<Chunk> eligibleChunksForSpawning = new HashSet<>();
+    private Set<Chunk> eligibleChunksForSpawning;
 
     private double succesfulSpawns;
 
-    public Witch(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxAdvancers) {
+    public WitchSimulator(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxAdvancers, int maxPlayers) {
 
-        this(seed, biomeSource, witchChunks, neighbourChunks, chunksForSpawning);
+        this(seed, biomeSource, witchChunks, neighbourChunks, chunksForSpawning, maxPlayers);
         this.semaphore = semaphore;
         this.maxAdvancers = maxAdvancers;
         this.areaMansionX = areaMansionX;
@@ -54,7 +54,17 @@ public class Witch {
 
     }
 
-    public Witch(long seed, OverworldBiomeSource biomeSource, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning/*, int maxAdvancers*/) {
+    public WitchSimulator(long seed, OverworldBiomeSource biomeSource, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning,/*, int maxAdvancers*/int maxPlayers) {
+        int totalChunks = 255 * maxPlayers;
+
+        int bucketSize = 16;
+
+        while (bucketSize * 0.75 < totalChunks) {
+            bucketSize *= 2;
+        }
+
+        this.eligibleChunksForSpawning = new HashSet<>(bucketSize);
+
         this.seed = seed;
         this.biomeSource = biomeSource;
         this.eligibleChunksForSpawning.addAll(chunksForSpawning);
@@ -74,7 +84,7 @@ public class Witch {
         String iter = Arrays.toString(this.finalHeightMap);
         String advancers = "" + this.advancers;
         String tp = " /tp " + fromX + " 150 " + fromZ + "\n";
-        String quality = "S:" + String.format("%.3f", this.succesfulSpawns);
+        String quality = "S:" + String.format("%.4f", this.succesfulSpawns / 64D);
 
         try {
             this.semaphore.acquire();
@@ -105,7 +115,7 @@ public class Witch {
 
     private void calculateRandomChunkPositionsFull(int calls) {
         int validChunks = 0;
-        HashMap<Integer, Integer> differentCalls = new HashMap<>();
+        HashMap<Integer, Integer> differentCalls = new HashMap<>(); //TODO: naming
         HashMap<Integer, Integer> differentCallsTemp = new HashMap<>();
 
 //        differentCalls.add(calls);
@@ -143,10 +153,7 @@ public class Witch {
                                 int staticZ = blockpos.getZ();
 
                                 int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, specificCall + moreCalls + extraCalls, differentCallsTemp, positionsTemp, specificCallAmount);
-//                                if (spawns >= (54 / (i * 2 + 1))) {//max 64
-                                if (spawns >= (250 / (i + 1))) {//max 255
-                                    validSpawns += specificCallAmount;
-                                }
+
                                 quality += (double) (spawns * specificCallAmount) / completeCallsAmount;
 
                             }
@@ -162,10 +169,11 @@ public class Witch {
                             }
                         }
 
-                        if (validSpawns >= completeCallsAmount * 0.95 / (2 * i + 1)) {//TODO: MAYBE based on quality(Maybe not)
+//                        if (validSpawns >= completeCallsAmount * 0.95 / (2 * i + 1)) {
+                        if (this.succesfulSpawns + quality >= -(25 * i * i) + 140 * i + 255 ) {
                             this.finalHeightMap[i] = height;
                             validChunks++;
-                            this.succesfulSpawns += quality;// This number might not be not super representative
+                            this.succesfulSpawns += quality;
                             break;//TODO: It only uses the first height it finds for a chunk
                         }
                         differentCallsTemp.clear();
@@ -183,9 +191,7 @@ public class Witch {
                     }
                 }
                 else {
-
                     extraCalls += 3;
-
                 }
 
             }
