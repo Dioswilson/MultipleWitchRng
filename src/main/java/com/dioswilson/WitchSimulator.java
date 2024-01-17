@@ -4,6 +4,8 @@ import com.dioswilson.Litematica.LitematicStructureBuilder;
 import com.dioswilson.gui.ResultsPanel;
 import com.dioswilson.minecraft.BlockPos;
 import com.dioswilson.minecraft.Chunk;
+import com.dioswilson.utils.CopyableRandom;
+import com.dioswilson.utils.SpawnPackNode;
 import com.seedfinding.mcbiome.source.OverworldBiomeSource;
 
 import javax.swing.*;
@@ -43,6 +45,7 @@ public class WitchSimulator {
     private Set<Chunk> eligibleChunksForSpawning;
 
     private double succesfulSpawns;
+    SpawnPackNode[] roots;
 
     public WitchSimulator(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxAdvancers, int maxPlayers) {
 
@@ -55,6 +58,7 @@ public class WitchSimulator {
     }
 
     public WitchSimulator(long seed, OverworldBiomeSource biomeSource, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning,/*, int maxAdvancers*/int maxPlayers) {
+
         int totalChunks = 255 * maxPlayers;
 
         int bucketSize = 16;
@@ -72,6 +76,29 @@ public class WitchSimulator {
         this.neighbourChunks.addAll(neighbourChunks);
 
         finalHeightMap = new int[this.witchChunks.size()];
+
+        //Maybe improve this initialization
+        roots = new SpawnPackNode[]{
+                new SpawnPackNode(0, 1, this.biomeSource),
+                new SpawnPackNode(0, 2, this.biomeSource),
+                new SpawnPackNode(0, 3, this.biomeSource),
+                new SpawnPackNode(0, 4, this.biomeSource),
+        };
+
+        for (int i = 0; i < 4; i++) {
+            roots[i].addChild(new SpawnPackNode(1, 1, this.biomeSource));
+            roots[i].addChild(new SpawnPackNode(1, 2, this.biomeSource));
+            roots[i].addChild(new SpawnPackNode(1, 3, this.biomeSource));
+            roots[i].addChild(new SpawnPackNode(1, 4, this.biomeSource));
+
+            for (int j = 0; j < 4; j++) {
+                roots[i].getChildren().get(j).addChild(new SpawnPackNode(2, 1, this.biomeSource));
+                roots[i].getChildren().get(j).addChild(new SpawnPackNode(2, 2, this.biomeSource));
+                roots[i].getChildren().get(j).addChild(new SpawnPackNode(2, 3, this.biomeSource));
+                roots[i].getChildren().get(j).addChild(new SpawnPackNode(2, 4, this.biomeSource));
+            }
+        }
+
     }
 
     public void print() {
@@ -103,6 +130,9 @@ public class WitchSimulator {
 
     public void initialize() {
 
+        if (this.areaMansionX * 1280 == 949760 && this.areaMansionZ * 1280 == 1944320) {
+            System.out.println("TEST");
+        }
         for (int i = 0; i <= this.maxAdvancers; i++) {
             this.advancers = 0;
             Arrays.fill(this.finalHeightMap, 0);
@@ -144,7 +174,6 @@ public class WitchSimulator {
                     for (int height : heightMap) {
 
                         double quality = 0;
-                        int validSpawns = 0;
                         for (int specificCall : differentCalls.keySet()) {
                             int specificCallAmount = differentCalls.get(specificCall);
 
@@ -157,7 +186,6 @@ public class WitchSimulator {
                                 int staticX = blockpos.getX();
                                 int staticZ = blockpos.getZ();
 
-                                //Todo: Needs optimizng
                                 int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, specificCall + moreCalls + extraCalls, differentCallsTemp, positionsTemp, specificCallAmount);
 
                                 quality += (double) (spawns * specificCallAmount) / completeCallsAmount;
@@ -192,7 +220,7 @@ public class WitchSimulator {
                     if (this.succesfulSpawns + maxQuality >= -(25 * i * i) + 145 * i + 255) {
                         this.finalHeightMap[i] = finalHeightmap;
                         validChunks++;
-                        this.succesfulSpawns+=maxQuality;
+                        this.succesfulSpawns += maxQuality;
                         this.positions.addAll(defPositionsTemp);
                         positionsTemp.clear();
                         differentCalls.clear();
@@ -228,17 +256,46 @@ public class WitchSimulator {
         int spawns = 0;
         int currCalls;
 
+        CopyableRandom rand = new CopyableRandom(this.seed);
+
+        List<Long> randomSeeds = new ArrayList<>();//Maybe use array
+
+        for (int i = 0; i < prevCalls; i++) {
+            rand.nextInt();
+        }
+
         for (int packSize1 : mobsPerPack) {
+            if (randomSeeds.size() > 0) {
+                rand.setCurrentSeed(randomSeeds.get(0));
+            }
+            else {
+                randomSeeds.add(0, rand.getCurrentSeed());
+            }
             int mobsSpawned = 0;
-            HashMap<String, Integer> strike1 = performSpawning(packSize1/*, new Random(seed)*/, prevCalls, staticX, staticY, staticZ, chunk, mobsSpawned, positionsTemp);
+
+            HashMap<String, Integer> strike1 = performSpawning(packSize1, rand, prevCalls, staticX, staticY, staticZ, chunk, mobsSpawned, positionsTemp);
             mobsSpawned = strike1.get("mobs");
             if (mobsSpawned < 4) {
                 for (int packSize2 : mobsPerPack) {
-                    HashMap<String, Integer> strike2 = performSpawning(packSize2/*, new Random(seed)*/, strike1.get("calls"), staticX, staticY, staticZ, chunk, strike1.get("mobs"), positionsTemp);
+                    if (randomSeeds.size() > 1) {
+                        rand.setCurrentSeed(randomSeeds.get(1));
+                    }
+                    else {
+                        randomSeeds.add(1, rand.getCurrentSeed());
+                    }
+
+                    HashMap<String, Integer> strike2 = performSpawning(packSize2, rand, strike1.get("calls"), staticX, staticY, staticZ, chunk, strike1.get("mobs"), positionsTemp);
                     mobsSpawned = strike2.get("mobs");
                     if (mobsSpawned < 4) {
                         for (int packSize3 : mobsPerPack) {
-                            HashMap<String, Integer> strike3 = performSpawning(packSize3/*, new Random(seed)*/, strike2.get("calls"), staticX, staticY, staticZ, chunk, strike2.get("mobs"), positionsTemp);
+                            if (randomSeeds.size() > 2) {
+                                rand.setCurrentSeed(randomSeeds.get(2));
+                            }
+                            else {
+                                randomSeeds.add(2, rand.getCurrentSeed());
+                            }
+
+                            HashMap<String, Integer> strike3 = performSpawning(packSize3, rand, strike2.get("calls"), staticX, staticY, staticZ, chunk, strike2.get("mobs"), positionsTemp);
                             spawns += strike3.get("mobs");
                             currCalls = strike3.get("calls");
                             if (calls.containsKey(currCalls)) {
@@ -247,6 +304,7 @@ public class WitchSimulator {
                             else {
                                 calls.put(currCalls, repetition);
                             }
+
                         }
                     }
                     else {
@@ -260,6 +318,10 @@ public class WitchSimulator {
 
                         spawns += 16;
                     }
+
+                    if (randomSeeds.size() > 2) {
+                        randomSeeds.remove(2);
+                    }
                 }
             }
             else {
@@ -272,27 +334,24 @@ public class WitchSimulator {
                 }
                 spawns += 64;
             }
-
+            if (randomSeeds.size() > 1) {
+                randomSeeds.remove(1);
+            }
         }
         return spawns;
     }
 
-    public HashMap<String, Integer> performSpawning(int value/*, Random rand*/, int calls, int staticX, int staticY, int staticZ, Chunk chunk, int spawnedMobs, Set<BlockPos> positionsTemp) {
-        Random rand = new Random(seed);
+    public HashMap<String, Integer> performSpawning(int packSize, Random rand, int calls, int staticX, int staticY, int staticZ, Chunk chunk, int spawnedMobs, Set<BlockPos> positionsTemp) {
 
         int x = staticX;
         int z = staticZ;
 
         boolean list = false;
         boolean canSpawn = true;
-
-        for (int c = 0; c < calls; c++) {
-            rand.nextInt();
-        }
         int moreCalls = 0;
         HashMap<String, Integer> data = new HashMap<>();
 
-        for (int i4 = 0; i4 < value; ++i4) {
+        for (int i4 = 0; i4 < packSize; ++i4) {
 
             x += rand.nextInt(6) - rand.nextInt(6);//6 is 2 calls
             rand.nextInt(1);//These two are from Y, (0-0)
@@ -361,9 +420,7 @@ public class WitchSimulator {
 
         return data;
 
-
     }
-
 
     public void getBlocksPositions(int calls, int playerX, int playerZ) {
         int validChunks = 0;
@@ -373,6 +430,7 @@ public class WitchSimulator {
         differentCalls.put(calls, 1);
 
         Set<BlockPos> positionsTemp = new HashSet<>();
+        Set<BlockPos> fillBlocksTemp = new HashSet<>();
 
         int i = 0;
         for (Chunk chunk : this.eligibleChunksForSpawning) {
@@ -380,12 +438,18 @@ public class WitchSimulator {
             int callsAmount = differentCalls.size();//If ==0 then can optimize skipping, it means previous chunk was useless
 
             if (callsAmount > 0) {
+
                 if (this.witchChunks.contains(chunk)) {
                     int completeCallsAmount = differentCalls.values().stream().mapToInt(Integer::intValue).sum();
 
-                    for (int height : heightMap) {
+                    double maxQuality = 0;
+                    int finalHeightmap = 0;
+                    HashMap<Integer, Integer> defDifferentCalls = new HashMap<>();
+                    Set<BlockPos> defPositionsTemp = new HashSet<>();
+                    Set<BlockPos> fillBlocksDef = new HashSet<>();
 
-                        int validSpawns = 0;
+                    for (int height : heightMap) {
+                        double quality = 0;
 
                         for (int specificCall : differentCalls.keySet()) {
                             int specificCallAmount = differentCalls.get(specificCall);
@@ -401,9 +465,8 @@ public class WitchSimulator {
 
                                 int spawns = simulatePackSpawns(staticX, staticY, staticZ, chunk, specificCall + moreCalls /*+ extraCalls*/, differentCallsTemp, positionsTemp, specificCallAmount);
 
-                                if (spawns >= (250 / (i + 1))) {//max 256
-                                    validSpawns += specificCallAmount;
-                                }
+                                quality += (double) (spawns * specificCallAmount) / completeCallsAmount;
+
                             }
                             else {
                                 int currCalls = specificCall + moreCalls;
@@ -413,23 +476,37 @@ public class WitchSimulator {
                                 else {
                                     differentCallsTemp.put(currCalls, specificCallAmount * 64);
                                 }
-                                this.blocksToFill.add(blockpos);//Could only add them if they are on the correct Heightmap
+
+                                fillBlocksTemp.add(blockpos);
                             }
                         }
 
-                        if (validSpawns >= completeCallsAmount * 0.95 / (2 * i + 1)) {
-                            this.finalHeightMap[i] = height;
-                            validChunks++;
-                            break;//TODO: It only uses the first height it finds for a chunk
+                        if (quality > maxQuality) {//If it is equal, might be worth checking the different outcomes
+                            maxQuality = quality;
+                            defDifferentCalls.clear();
+                            defPositionsTemp.clear();
+                            defDifferentCalls.putAll(differentCallsTemp);
+                            defPositionsTemp.addAll(positionsTemp);
+                            fillBlocksDef.clear();
+                            fillBlocksDef.addAll(fillBlocksTemp);
+                            finalHeightmap = height;
                         }
                         differentCallsTemp.clear();
                         positionsTemp.clear();
+                        fillBlocksTemp.clear();
                     }
-                    this.positions.addAll(positionsTemp);
-                    positionsTemp.clear();
-                    differentCalls.clear();
-                    differentCalls.putAll(differentCallsTemp);
-                    differentCallsTemp.clear();
+                    if (this.succesfulSpawns + maxQuality >= -(25 * i * i) + 145 * i + 255) {
+                        this.finalHeightMap[i] = finalHeightmap;
+                        validChunks++;
+                        this.succesfulSpawns += maxQuality;
+                        this.positions.addAll(defPositionsTemp);
+                        positionsTemp.clear();
+                        differentCalls.clear();
+                        differentCalls.putAll(defDifferentCalls);
+                        differentCallsTemp.clear();
+                        this.blocksToFill.addAll(fillBlocksDef);
+                        fillBlocksDef.clear();
+                    }
                     i++;
                     if (i == this.witchChunks.size()) {
                         break;
@@ -564,6 +641,100 @@ public class WitchSimulator {
             structure.save(fileChooser.getSelectedFile());
         }
     }
+
+
+   /* public int simulatePackSpawnsTreeApproach(int staticX, int staticY, int staticZ, Chunk chunk, int prevCalls, HashMap<Integer, Integer> calls, Set<BlockPos> positionsTemp, int repetition) {
+        int spawns = 0;
+
+        CopyableRandom rand = new CopyableRandom(seed);
+
+        for (int i = 0; i < prevCalls; i++) {
+            rand.nextInt();
+        }
+        try {
+            CopyableRandom currRand;
+            List<Long> randomSeeds = new ArrayList<>();//Maybe use array
+            List<Integer> mobsSpawnedList = new ArrayList<>();//Maybe use array
+            List<Integer> callsList = new ArrayList<>();//Maybe use array
+
+            int depth = -1;
+
+            for (SpawnPackNode root : roots) {
+                Stack<SpawnPackNode> queue = new Stack<>();
+                queue.add(root);
+
+                int mobsSpawned = 0;
+                int currCalls = prevCalls;
+
+                HashMap<String, Integer> data = null;
+                currRand = rand.copy();
+
+                while (!queue.empty()) {
+                    SpawnPackNode node = queue.pop();
+                    for (SpawnPackNode child : node.getChildren()) {
+                        queue.push(child);
+                    }
+
+//                    for (int i = node.getChildren().size() - 1; i >= 0; i--) {
+//                        queue.push(node.getChildren().get(i));
+//                    }
+
+                    if (depth > node.getDepth()) {
+                        for (int i = depth; i > node.getDepth(); i--) {
+                            randomSeeds.remove(i);
+                            mobsSpawnedList.remove(i);
+                            callsList.remove(i);
+                        }
+                    }
+                    depth = node.getDepth();
+                    if (randomSeeds.size() >= depth + 1) {
+                        currRand.setCurrentSeed(randomSeeds.get(depth));
+                        mobsSpawned = mobsSpawnedList.get(depth);
+                        currCalls = callsList.get(depth);
+                    }
+                    else {
+                        randomSeeds.add(depth, currRand.getCurrentSeed());
+                        mobsSpawnedList.add(depth, mobsSpawned);
+                        callsList.add(depth, currCalls);
+                    }
+
+                    if (mobsSpawned < 4) {
+                        data = node.testSpawns(currRand, staticX, staticZ, staticY, chunk, mobsSpawned, positionsTemp);
+                        mobsSpawned = data.get("mobs");
+                        currCalls += data.get("newCalls");
+                    }
+                    else {
+                        queue.clear();
+                    }
+
+                    if (mobsSpawned >= 4 || depth == 2) {
+                        if (calls.containsKey(currCalls)) {
+                            calls.merge(currCalls, (int) Math.pow(4, 2 - depth) * repetition, Integer::sum);
+                        }
+                        else {
+                            calls.put(currCalls, (int) Math.pow(4, 2 - depth) * repetition); //Maybe optimize by using own pow
+                        }
+
+                        if (depth != 2) {
+                            spawns += (int) Math.pow(4, 3 - depth);
+                            for (int i = 0; i < node.getChildren().size(); i++) {
+                                queue.pop();
+                            }
+                        }
+                        else {
+                            spawns += data.get("mobs");
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return spawns;
+    }*/
+
+
 
 }
 

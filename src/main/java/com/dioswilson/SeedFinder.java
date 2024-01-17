@@ -146,6 +146,7 @@ public class SeedFinder extends Thread {
 
                 x += di;
                 z += dj;
+
                 segmentPassed++;
                 if (segmentPassed == segmentLength) {
                     segmentPassed = 0;
@@ -188,17 +189,17 @@ public class SeedFinder extends Thread {
         if (!stop) {
             long i = x * 341873128712L + z * 132897987541L + this.seed + this.KONST;
             OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, this.seed);
-            WitchSimulator witchSimulator = new WitchSimulator(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers, 5);//TODO: Change
+            WitchSimulator witchSimulator = new WitchSimulator(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers, 1);//TODO: Change
             witchSimulator.initialize();
         }
 
 
     }
 
-    public void setRandomSeedWithAdvancer(int x, int z, int advancers) {
+    public void setRandomSeedWithAdvancer(int x, int z, int advancers) {//Bad name
         long i = x * 341873128712L + z * 132897987541L + this.seed + this.KONST;
         OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, this.seed);
-        WitchSimulator witchSimulator = new WitchSimulator(i, biomeSource, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, 5); //TODO: CHANGE
+        WitchSimulator witchSimulator = new WitchSimulator(i, biomeSource, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, 1); //TODO: CHANGE
         witchSimulator.getBlocksPositions(4 + advancers, playerX, playerZ);
     }
 
