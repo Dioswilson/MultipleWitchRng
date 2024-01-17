@@ -60,10 +60,8 @@ public class GenerateLitematicPanel extends JPanel {
         JButton generateLitematicButton = new JButton("Generate Litematic");
 
         generateLitematicButton.addActionListener(e -> {
-//            dataPanel.getWitchChunks();
-
             try {
-                new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(), (int) (long) advancersTextField.getValue(), dataPanel.getWitchChunks(), dataPanel.getSeed(), (int) (long) fromXTextField.getValue(), (int) (long) fromZTextField.getValue()).start();
+                new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(), (int) (long) advancersTextField.getValue(), dataPanel.getWitchChunks(), dataPanel.getSeed(), (int) (long) fromXTextField.getValue(), (int) (long) fromZTextField.getValue(), dataPanel.getMaxPlayers()).start();
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(generateLitematicButton, "Insert values at \"Input Values\" tab");
             }
@@ -75,7 +73,7 @@ public class GenerateLitematicPanel extends JPanel {
         appendToTable.addActionListener(e -> {
             try {
 
-                SeedFinder seedFinder = new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(), (int) (long) advancersTextField.getValue(), dataPanel.getWitchChunks(), dataPanel.getSeed());
+                SeedFinder seedFinder = new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(), (int) (long) advancersTextField.getValue(), dataPanel.getWitchChunks(), dataPanel.getSeed(), dataPanel.getMaxPlayers());
                 SeedFinder.stop = false;
                 seedFinder.getChunksForSpawning();
                 seedFinder.setRandomSeed((int) (long) fromXTextField.getValue() / 1280, (int) (long) fromZTextField.getValue() / 1280);

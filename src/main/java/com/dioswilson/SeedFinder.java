@@ -21,6 +21,7 @@ public class SeedFinder extends Thread {
     private int playerZ;
 
     private int maxAdvancers;
+    private final int maxPlayers;
     private Set<Chunk> chunksForSpawning = new HashSet<>();
 
     private List<Chunk> witchChunks;
@@ -34,7 +35,7 @@ public class SeedFinder extends Thread {
     private AtomicReference<Double> performace;
 
 
-    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed) {
+    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed, int maxPlayers) {
 
         this.seed = seed;
         this.playerX = playerX;
@@ -52,18 +53,19 @@ public class SeedFinder extends Thread {
         }
 
         this.maxAdvancers = maxAdvancers;
+        this.maxPlayers = maxPlayers;
 
     }
 
-    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed, AtomicReference<Double> performace) {
+    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed, AtomicReference<Double> performace, int maxPlayers) {
 
-        this(playerX, playerZ, maxAdvancers, witchChunks, seed);
+        this(playerX, playerZ, maxAdvancers, witchChunks, seed, maxPlayers);
 
         this.performace = performace;
     }
 
-    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed, int witchX, int witchZ) {
-        this(playerX, playerZ, maxAdvancers, witchChunks, seed);
+    public SeedFinder(int playerX, int playerZ, int maxAdvancers, List<Chunk> witchChunks, long seed, int witchX, int witchZ, int maxPlayers) {
+        this(playerX, playerZ, maxAdvancers, witchChunks, seed, maxPlayers);
         this.witchX = witchX;
         this.witchZ = witchZ;
     }
@@ -112,7 +114,7 @@ public class SeedFinder extends Thread {
 //        this.witchChunks.add(new Chunk(32, 33));
 
 
-        final int threadCount = (int) Math.ceil(Runtime.getRuntime().availableProcessors()*performace.get());
+        final int threadCount = (int) Math.ceil(Runtime.getRuntime().availableProcessors() * performace.get());
 //        final int threadCount = 7;
 
         final ExecutorService threadExecutorService = Executors.newFixedThreadPool(threadCount);
@@ -189,7 +191,7 @@ public class SeedFinder extends Thread {
         if (!stop) {
             long i = x * 341873128712L + z * 132897987541L + this.seed + this.KONST;
             OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, this.seed);
-            WitchSimulator witchSimulator = new WitchSimulator(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers, 1);//TODO: Change
+            WitchSimulator witchSimulator = new WitchSimulator(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers, this.maxPlayers);
             witchSimulator.initialize();
         }
 
@@ -199,7 +201,7 @@ public class SeedFinder extends Thread {
     public void setRandomSeedWithAdvancer(int x, int z, int advancers) {//Bad name
         long i = x * 341873128712L + z * 132897987541L + this.seed + this.KONST;
         OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, this.seed);
-        WitchSimulator witchSimulator = new WitchSimulator(i, biomeSource, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, 1); //TODO: CHANGE
+        WitchSimulator witchSimulator = new WitchSimulator(i, biomeSource, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxPlayers);
         witchSimulator.getBlocksPositions(4 + advancers, playerX, playerZ);
     }
 

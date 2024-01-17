@@ -24,6 +24,7 @@ public class InputValuesPanel extends JPanel {
     private JFormattedTextField wh4Z;
     private JFormattedTextField playerX;
     private JFormattedTextField playerZ;
+    private JFormattedTextField maxPlayers;
     public static JButton searchButton;
     private List<Chunk> witchChunks = new ArrayList<>();
 
@@ -209,6 +210,22 @@ public class InputValuesPanel extends JPanel {
         bottom.setLayout(new GridBagLayout());
         c.gridx = 0;
         c.gridy = 0;
+
+        c.gridwidth = 2;
+        bottom.add(new JLabel("Max Players: ", SwingConstants.LEFT), c);
+
+        c.gridwidth = 1;
+        c.gridy = 1;
+
+        this.maxPlayers = new JFormattedTextField(numberFormat);
+        this.maxPlayers.setColumns(6);
+        this.maxPlayers.setHorizontalAlignment(JTextField.CENTER);
+
+        bottom.add(maxPlayers, c);
+
+
+        c.gridy = 0;
+        c.gridx = 3;
         c.gridwidth = 4;
         c.fill = GridBagConstraints.HORIZONTAL;
 
@@ -219,27 +236,27 @@ public class InputValuesPanel extends JPanel {
 
         bottom.add(new JLabel("X:"), c);
 
-        c.gridx = 1;
+        c.gridx = 4;
 
         this.playerX = new JFormattedTextField(numberFormat);
-        this.playerX.setColumns(5);
+        this.playerX.setColumns(6);
         this.playerX.setHorizontalAlignment(JTextField.CENTER);
 
         bottom.add(playerX, c);
 
-        c.gridx = 2;
+        c.gridx = 5;
 
         bottom.add(new JLabel("Z:"), c);
 
-        c.gridx = 3;
+        c.gridx = 6;
 
         this.playerZ = new JFormattedTextField(numberFormat);
-        this.playerZ.setColumns(5);
+        this.playerZ.setColumns(6);
         this.playerZ.setHorizontalAlignment(JTextField.CENTER);
 
         bottom.add(playerZ, c);
 
-        c.gridx = 5;
+        c.gridx = 8;
 
         searchButton = new JButton("Start");
 
@@ -256,7 +273,7 @@ public class InputValuesPanel extends JPanel {
                             SeedFinder.stop = false;
                             searchButton.setText("Stop");
                             ResultsPanel.model.setRowCount(0);
-                            new SeedFinder((int) (long) playerX.getValue(), (int) (long) playerZ.getValue(), (int) (long) maxAdvancers.getValue(), witchChunks, (long) seedTextField.getValue(), performace).start();
+                            new SeedFinder((int) (long) playerX.getValue(), (int) (long) playerZ.getValue(), (int) (long) maxAdvancers.getValue(), witchChunks, (long) seedTextField.getValue(), performace, (int) maxPlayers.getValue()).start();
                         }
                         else {
                             JOptionPane.showMessageDialog(searchButton, "Input witch huts' chunk coords");
@@ -404,6 +421,10 @@ public class InputValuesPanel extends JPanel {
 
     public int getPlayerZ() {
         return (int) (long) this.playerZ.getValue();
+    }
+
+    public int getMaxPlayers() {
+        return (int) (long) this.maxPlayers.getValue();
     }
 
     public List<Chunk> getWitchChunks() {

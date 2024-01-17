@@ -3,7 +3,8 @@ package com.dioswilson.gui;
 import com.dioswilson.SeedFinder;
 
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 public class ResultsPanel extends JPanel {
@@ -15,7 +16,7 @@ public class ResultsPanel extends JPanel {
         this.dataPanel = dataPanel;
 
         setLayout(new BorderLayout());
-        model = new DefaultTableModel(new String[]{"From", "To", "Heightmap", "Advancers","Spawns" ,"Litematica"}, 0)/*{ &&
+        model = new DefaultTableModel(new String[]{"From", "To", "Heightmap", "Advancers", "Spawns", "Litematica"}, 0)/*{ &&
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -103,7 +104,8 @@ public class ResultsPanel extends JPanel {
                 int witchX = Integer.parseInt(from[0].split(":")[1]);
                 int witchZ = Integer.parseInt(from[1].split(":")[1]);
                 int advancers = Integer.parseInt((String) table.getValueAt(selectedRow, 3));
-                new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(), advancers, dataPanel.getWitchChunks(), dataPanel.getSeed(), witchX, witchZ).start();
+                new SeedFinder(dataPanel.getPlayerX(), dataPanel.getPlayerZ(), advancers, dataPanel.getWitchChunks(), dataPanel.getSeed(), witchX, witchZ, dataPanel.getMaxPlayers()).start();
+//                        setRandomSeedWithAdvancer(witchX/1280,witchZ/1280,advancers); //Should do it this way, but whatever
 
             }
             isPushed = false;

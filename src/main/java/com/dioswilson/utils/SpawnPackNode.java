@@ -21,8 +21,6 @@ public class SpawnPackNode {
     private final OverworldBiomeSource biomeSource;
 
     public SpawnPackNode(int depth, int packSize, OverworldBiomeSource biomeSource) {//Some way to add children
-        //TODO: IMPLEMENT CONSTRUCTOR
-
         this.depth = depth;
         this.packSize = packSize;
         this.biomeSource = biomeSource;
