@@ -273,7 +273,7 @@ public class InputValuesPanel extends JPanel {
                             SeedFinder.stop = false;
                             searchButton.setText("Stop");
                             ResultsPanel.model.setRowCount(0);
-                            new SeedFinder((int) (long) playerX.getValue(), (int) (long) playerZ.getValue(), (int) (long) maxAdvancers.getValue(), witchChunks, (long) seedTextField.getValue(), performace, (int) maxPlayers.getValue()).start();
+                            new SeedFinder((int) (long) playerX.getValue(), (int) (long) playerZ.getValue(), (int) (long) maxAdvancers.getValue(), witchChunks, (long) seedTextField.getValue(), performace, (int)(long) maxPlayers.getValue()).start();
                         }
                         else {
                             JOptionPane.showMessageDialog(searchButton, "Input witch huts' chunk coords");
