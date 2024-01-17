@@ -19,4 +19,4 @@ This application lets you find mansion areas for witch rng on witch huts, allowi
 - It does not matter the order you put witch huts, heightmap result will always be in the same order (Depending on the hash)
 - Chunk loading grid must be before mob spawning (TT is ok)
 - DO NOT raise heightmap where litematic placed bedrock or a witch hut
-- Quality value should represent (with a small error) the amount of spawns every 64 gameticks. Contact me if not
+- `Spawns` value represents (with a small error) the amount of spawns every gametick. Contact me if not

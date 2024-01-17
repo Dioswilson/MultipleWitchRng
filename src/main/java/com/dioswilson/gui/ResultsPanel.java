@@ -15,7 +15,7 @@ public class ResultsPanel extends JPanel {
         this.dataPanel = dataPanel;
 
         setLayout(new BorderLayout());
-        model = new DefaultTableModel(new String[]{"From", "To", "Heightmap", "Advancers","Spawns/tick" ,"Litematica"}, 0)/*{ &&TODO: Check UI
+        model = new DefaultTableModel(new String[]{"From", "To", "Heightmap", "Advancers","Spawns" ,"Litematica"}, 0)/*{ &&
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
