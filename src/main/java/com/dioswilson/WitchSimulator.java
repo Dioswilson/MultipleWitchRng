@@ -125,26 +125,28 @@ public class WitchSimulator {
 
     public void initialize() {
 
+        CopyableRandom rand = new CopyableRandom(seed);
+        rand.advanceSeed(4);
         for (int i = 0; i <= this.maxAdvancers; i++) {
             this.advancers = 0;
             Arrays.fill(this.finalHeightMap, 0);
             this.positions.clear();
             this.blocksToFill.clear();
-            calculateRandomChunkPositionsFull(4 + i);
+            calculateRandomChunkPositionsFull(4 + i, rand.getCurrentSeed());
+            rand.nextInt();
         }
 
     }
 
-    private void calculateRandomChunkPositionsFull(int calls) {
+    private void calculateRandomChunkPositionsFull(int calls, long initialSeed) {
         int validChunks = 0;
         HashMap<Long, Integer> differentSeeds = new HashMap<>(); //TODO: naming
         HashMap<Long, Integer> differentSeedsTemp = new HashMap<>();
 
-        CopyableRandom initRand = new CopyableRandom(seed);
-        for (int i = 0; i < calls; i++) {
-            initRand.nextInt();
-        }
-        differentSeeds.put(initRand.getCurrentSeed(), 1);
+//        CopyableRandom initRand = new CopyableRandom(seed);
+//        initRand.advanceSeed(calls);
+
+        differentSeeds.put(initialSeed, 1);
 
         int i = 0;
         int extraCalls = 0;
@@ -176,9 +178,7 @@ public class WitchSimulator {
                             CopyableRandom rand = new CopyableRandom(seed);
                             rand.setCurrentSeed(specificSeed);
 
-                            for (int i1 = 0; i1 < extraCalls; i1++) {
-                                rand.nextInt();
-                            }
+                            rand.advanceSeed(extraCalls);
 
                             BlockPos blockpos = getRandomChunkPosition(rand, chunk.getX(), chunk.getZ(), height);
                             int staticY = blockpos.getY();
@@ -417,9 +417,8 @@ public class WitchSimulator {
         HashMap<Long, Integer> differentSeedsTemp = new HashMap<>();
 
         CopyableRandom initRand = new CopyableRandom(seed);
-        for (int i = 0; i < calls; i++) {
-            initRand.nextInt();
-        }
+        initRand.advanceSeed(calls);
+
         differentSeeds.put(initRand.getCurrentSeed(), 1);
 
         Set<BlockPos> positionsTemp = new HashSet<>();

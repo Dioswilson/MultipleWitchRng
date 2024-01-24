@@ -48,4 +48,9 @@ public class CopyableRandom extends Random {
         return new CopyableRandom((seed.get() ^ multiplier) & mask);
     }
 
+    public void advanceSeed(int advancers) {
+        for (int i = 0; i < advancers; i++) {
+            next(48);
+        }
+    }
 }
