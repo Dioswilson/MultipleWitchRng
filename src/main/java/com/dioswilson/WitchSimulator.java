@@ -5,7 +5,6 @@ import com.dioswilson.gui.ResultsPanel;
 import com.dioswilson.minecraft.BlockPos;
 import com.dioswilson.minecraft.Chunk;
 import com.dioswilson.utils.CopyableRandom;
-import com.dioswilson.utils.SpawnPackNode;
 import com.seedfinding.mcbiome.source.OverworldBiomeSource;
 
 import javax.swing.*;
@@ -45,11 +44,16 @@ public class WitchSimulator {
     private Set<Chunk> eligibleChunksForSpawning;
 
     private double succesfulSpawns;
-    SpawnPackNode[] roots;
+    //    private SpawnPackNode[] roots;
+    private final int[][] cachedBiomes;
 
-    public WitchSimulator(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxAdvancers, int maxPlayers) {
+    private int minX = Integer.MAX_VALUE;
+    private int minZ = Integer.MAX_VALUE;
 
-        this(seed, biomeSource, witchChunks, neighbourChunks, chunksForSpawning, maxPlayers);
+    //It's super mega long, should split this into multiple methods, not just constructor, but I am lazy
+    public WitchSimulator(int areaMansionX, int areaMansionZ, long seed, OverworldBiomeSource biomeSource, Semaphore semaphore, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxAdvancers, int maxPlayers, int[][] cachedBiomes) {
+
+        this(seed, biomeSource, witchChunks, neighbourChunks, chunksForSpawning, maxPlayers, cachedBiomes);
         this.semaphore = semaphore;
         this.maxAdvancers = maxAdvancers;
         this.areaMansionX = areaMansionX;
@@ -57,7 +61,7 @@ public class WitchSimulator {
 
     }
 
-    public WitchSimulator(long seed, OverworldBiomeSource biomeSource, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning,/*, int maxAdvancers*/int maxPlayers) {
+    public WitchSimulator(long seed, OverworldBiomeSource biomeSource, List<Chunk> witchChunks, Set<Chunk> neighbourChunks, Set<Chunk> chunksForSpawning, int maxPlayers, int[][] cachedBiomes) {
 
         int totalChunks = 255 * maxPlayers;
 
@@ -77,20 +81,17 @@ public class WitchSimulator {
 
         finalHeightMap = new int[this.witchChunks.size()];
 
-        //Maybe improve this initialization
-        roots = new SpawnPackNode[]{new SpawnPackNode(0, 1, this.biomeSource), new SpawnPackNode(0, 2, this.biomeSource), new SpawnPackNode(0, 3, this.biomeSource), new SpawnPackNode(0, 4, this.biomeSource),};
+        this.cachedBiomes = cachedBiomes;
 
-        for (int i = 0; i < 4; i++) {
-            roots[i].addChild(new SpawnPackNode(1, 1, this.biomeSource));
-            roots[i].addChild(new SpawnPackNode(1, 2, this.biomeSource));
-            roots[i].addChild(new SpawnPackNode(1, 3, this.biomeSource));
-            roots[i].addChild(new SpawnPackNode(1, 4, this.biomeSource));
+        for (Chunk chunk : witchChunks) {
+            int x = (chunk.getX() << 4) - 5;
+            int z = (chunk.getZ() << 4) - 5;
 
-            for (int j = 0; j < 4; j++) {
-                roots[i].getChildren().get(j).addChild(new SpawnPackNode(2, 1, this.biomeSource));
-                roots[i].getChildren().get(j).addChild(new SpawnPackNode(2, 2, this.biomeSource));
-                roots[i].getChildren().get(j).addChild(new SpawnPackNode(2, 3, this.biomeSource));
-                roots[i].getChildren().get(j).addChild(new SpawnPackNode(2, 4, this.biomeSource));
+            if (x < minX) {
+                minX = x;
+            }
+            if (z < minZ) {
+                minZ = z;
             }
         }
 
@@ -254,7 +255,8 @@ public class WitchSimulator {
 
     }
 
-    public int simulatePackSpawns(int staticX, int staticY, int staticZ, Chunk chunk, CopyableRandom rand, HashMap<Long, Integer> seeds, Set<BlockPos> positionsTemp, int repetition) {
+    public int simulatePackSpawns(int staticX, int staticY, int staticZ, Chunk chunk, CopyableRandom
+            rand, HashMap<Long, Integer> seeds, Set<BlockPos> positionsTemp, int repetition) {
         int spawns = 0;
         long currSeed;
 
@@ -331,7 +333,8 @@ public class WitchSimulator {
         return spawns;
     }
 
-    public HashMap<String, Long> performSpawning(int packSize, CopyableRandom rand, int staticX, int staticY, int staticZ, Chunk chunk, int spawnedMobs, Set<BlockPos> positionsTemp) {
+    public HashMap<String, Long> performSpawning(int packSize, CopyableRandom rand, int staticX, int staticY,
+                                                 int staticZ, Chunk chunk, int spawnedMobs, Set<BlockPos> positionsTemp) {
 
         int x = staticX;
         int z = staticZ;
@@ -355,7 +358,19 @@ public class WitchSimulator {
                 list = true;
                 if ((x > (getX + offSetX)) || (z > (getZ + offSetZ)) || (x < (getX)) || (z < (getZ))) {//Can ignore height
 
-                    int biomeId = biomeSource.getBiome(x, staticY, z).getId();
+                    int biomeId;
+                    int cacheX = x - minX;
+                    int cacheZ = z - minZ;
+
+                    if (cachedBiomes[cacheX][cacheZ] != 0) {
+                        biomeId = cachedBiomes[cacheX][cacheZ];
+
+                    }
+                    else {
+                        biomeId = biomeSource.getBiome(x, staticY, z).getId();
+                        cachedBiomes[cacheX][cacheZ] = biomeId;
+                    }
+
                     int weight;
                     if (biomeId == 2 || biomeId == 17 || biomeId == 130) {//2,17,130=desert;21,22,23=jungle;6,134= swamp, ignoring snow,end,hell,void and mooshroom island
                         weight = rand.nextInt(515);

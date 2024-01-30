@@ -26,6 +26,7 @@ public class SeedFinder extends Thread {
 
     private List<Chunk> witchChunks;
     private HashSet<Chunk> neighbourChunks = new HashSet<>();
+    private int[][] cachedBiomes = new int[256][256];
 
     private Integer witchX;
     private Integer witchZ;
@@ -191,7 +192,7 @@ public class SeedFinder extends Thread {
         if (!stop) {
             long i = x * 341873128712L + z * 132897987541L + this.seed + this.KONST;
             OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, this.seed);
-            WitchSimulator witchSimulator = new WitchSimulator(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers, this.maxPlayers);
+            WitchSimulator witchSimulator = new WitchSimulator(x, z, i, biomeSource, this.semaphore, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxAdvancers, this.maxPlayers, this.cachedBiomes);
             witchSimulator.initialize();
         }
 
@@ -201,7 +202,7 @@ public class SeedFinder extends Thread {
     public void setRandomSeedWithAdvancer(int x, int z, int advancers) {//Bad name
         long i = x * 341873128712L + z * 132897987541L + this.seed + this.KONST;
         OverworldBiomeSource biomeSource = new OverworldBiomeSource(MCVersion.v1_12_2, this.seed);
-        WitchSimulator witchSimulator = new WitchSimulator(i, biomeSource, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxPlayers);
+        WitchSimulator witchSimulator = new WitchSimulator(i, biomeSource, this.witchChunks, this.neighbourChunks, this.chunksForSpawning, this.maxPlayers, this.cachedBiomes);
         witchSimulator.getBlocksPositions(4 + advancers, playerX, playerZ);
     }
 
