@@ -132,13 +132,13 @@ public class WitchSimulator {
             Arrays.fill(this.finalHeightMap, 0);
             this.positions.clear();
             this.blocksToFill.clear();
-            calculateRandomChunkPositionsFull(4 + i, rand.getCurrentSeed());
+            calculateRandomChunkPositionsFull(4 + i, rand);
             rand.nextInt();
         }
 
     }
 
-    private void calculateRandomChunkPositionsFull(int calls, long initialSeed) {
+    private void calculateRandomChunkPositionsFull(int calls, CopyableRandom ogRand) {
         int validChunks = 0;
         HashMap<Long, Integer> differentSeeds = new HashMap<>(); //TODO: naming
         HashMap<Long, Integer> differentSeedsTemp = new HashMap<>();
@@ -146,7 +146,7 @@ public class WitchSimulator {
 //        CopyableRandom initRand = new CopyableRandom(seed);
 //        initRand.advanceSeed(calls);
 
-        differentSeeds.put(initialSeed, 1);
+        differentSeeds.put(ogRand.getCurrentSeed(), 1);
 
         int i = 0;
         int extraCalls = 0;
@@ -154,6 +154,8 @@ public class WitchSimulator {
         this.succesfulSpawns = 0;
 
         Set<BlockPos> positionsTemp = new HashSet<>();
+
+        CopyableRandom rand = new CopyableRandom(ogRand);
 
         for (Chunk chunk : this.eligibleChunksForSpawning) {
 
@@ -167,7 +169,7 @@ public class WitchSimulator {
                     double maxQuality = 0;
                     int finalHeightmap = 0;
                     HashMap<Long, Integer> defDifferentSeeds = new HashMap<>();
-                    Set<BlockPos> defPositionsTemp = new HashSet<>();
+//                    Set<BlockPos> defPositionsTemp = new HashSet<>();
 
                     for (int height : heightMap) {
 
@@ -175,7 +177,6 @@ public class WitchSimulator {
                         for (long specificSeed : differentSeeds.keySet()) {
                             int specificSeedAmount = differentSeeds.get(specificSeed);
 
-                            CopyableRandom rand = new CopyableRandom(seed);
                             rand.setCurrentSeed(specificSeed);
 
                             rand.advanceSeed(extraCalls);
@@ -209,9 +210,9 @@ public class WitchSimulator {
                         if (quality > maxQuality) {//If it is equal, might be worth checking the different outcomes
                             maxQuality = quality;
                             defDifferentSeeds.clear();
-                            defPositionsTemp.clear();
+//                            defPositionsTemp.clear();
                             defDifferentSeeds.putAll(differentSeedsTemp);
-                            defPositionsTemp.addAll(positionsTemp);
+//                            defPositionsTemp.addAll(positionsTemp);
                             finalHeightmap = height;
                         }
                         differentSeedsTemp.clear();
@@ -222,8 +223,8 @@ public class WitchSimulator {
                         this.finalHeightMap[i] = finalHeightmap;
                         validChunks++;
                         this.succesfulSpawns += maxQuality;
-                        this.positions.addAll(defPositionsTemp);
-                        positionsTemp.clear();
+//                        this.positions.addAll(defPositionsTemp);
+//                        positionsTemp.clear();
                         differentSeeds.clear();
                         differentSeeds.putAll(defDifferentSeeds);
                         differentSeedsTemp.clear();
@@ -257,14 +258,14 @@ public class WitchSimulator {
         int spawns = 0;
         long currSeed;
 
-        List<Long> randomSeeds = new ArrayList<>();//Maybe use array
+        Long[] randomSeeds = new Long[3];
 
         for (int packSize1 : mobsPerPack) {
-            if (randomSeeds.size() > 0) {
-                rand.setCurrentSeed(randomSeeds.get(0));
+            if (randomSeeds[0] != null) {
+                rand.setCurrentSeed(randomSeeds[0]);
             }
             else {
-                randomSeeds.add(0, rand.getCurrentSeed());
+                randomSeeds[0] = rand.getCurrentSeed();
             }
             int mobsSpawned = 0;
 
@@ -272,25 +273,25 @@ public class WitchSimulator {
             mobsSpawned = (int) (long) strike1.get("mobs");
             if (mobsSpawned < 4) {
                 for (int packSize2 : mobsPerPack) {
-                    if (randomSeeds.size() > 1) {
-                        rand.setCurrentSeed(randomSeeds.get(1));
+                    if (randomSeeds[1] != null) {
+                        rand.setCurrentSeed(randomSeeds[1]);
                     }
                     else {
-                        randomSeeds.add(1, rand.getCurrentSeed());
+                        randomSeeds[1] = rand.getCurrentSeed();
                     }
 
                     HashMap<String, Long> strike2 = performSpawning(packSize2, rand, staticX, staticY, staticZ, chunk, (int) (long) strike1.get("mobs"), positionsTemp);
                     mobsSpawned = (int) (long) strike2.get("mobs");
                     if (mobsSpawned < 4) {
                         for (int packSize3 : mobsPerPack) {
-                            if (randomSeeds.size() > 2) {
-                                rand.setCurrentSeed(randomSeeds.get(2));
+                            if (randomSeeds[2] != null) {
+                                rand.setCurrentSeed(randomSeeds[2]);
                             }
                             else {
-                                randomSeeds.add(2, rand.getCurrentSeed());
+                                randomSeeds[2] = rand.getCurrentSeed();
                             }
 
-                            HashMap<String, Long> strike3 = performSpawning(packSize3, rand, staticX, staticY, staticZ, chunk, (int) (long) strike2.get("mobs"), positionsTemp);
+                            HashMap<String, Long> strike3 = performSpawning(packSize3, rand, staticX, staticY, staticZ, chunk, mobsSpawned, positionsTemp);
                             spawns += strike3.get("mobs");
                             currSeed = strike3.get("seed");
                             if (seeds.containsKey(currSeed)) {
@@ -312,10 +313,7 @@ public class WitchSimulator {
                         }
                         spawns += 16;
                     }
-
-                    if (randomSeeds.size() > 2) {
-                        randomSeeds.remove(2);
-                    }
+                    randomSeeds[2] = null;
                 }
             }
             else {
@@ -328,9 +326,7 @@ public class WitchSimulator {
                 }
                 spawns += 64;
             }
-            if (randomSeeds.size() > 1) {
-                randomSeeds.remove(1);
-            }
+            randomSeeds[1] = null;
         }
         return spawns;
     }
@@ -361,7 +357,7 @@ public class WitchSimulator {
 
                     int biomeId = biomeSource.getBiome(x, staticY, z).getId();
                     int weight;
-                    if (biomeId == 2 || biomeId == 17 || biomeId == 130) {//2,17,130=desert;21,22,23=jungla;6,134= swamp, ignoring snow,end,hell,void and mooshroom island
+                    if (biomeId == 2 || biomeId == 17 || biomeId == 130) {//2,17,130=desert;21,22,23=jungle;6,134= swamp, ignoring snow,end,hell,void and mooshroom island
                         weight = rand.nextInt(515);
                         if (!(weight - 415 >= -5 && weight - 415 < 0)) {//removes zombies and zombie villagers and places them at the end
                             canSpawn = false;
