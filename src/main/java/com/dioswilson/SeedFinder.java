@@ -75,6 +75,11 @@ public class SeedFinder extends Thread {
     public void run() {
         try {
             getChunksForSpawning();
+            for (int i = 0; i < 256; i++) {
+                for (int j = 0; j < 256; j++) {
+                    cachedBiomes[i][j] = 0;
+                }
+            }
             if (this.witchX == null) {
                 seedLoop();
             }
